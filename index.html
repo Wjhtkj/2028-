@@ -512,6 +512,64 @@
             max-width: 800px;
             margin: 0 auto;
         }
+        
+        /* 底部注释区域 */
+        .footer-notes {
+            max-width: 850px;
+            margin: 40px auto 20px;
+            padding: 25px;
+            background: rgba(18, 10, 40, 0.5);
+            border-radius: 16px;
+            border-left: 3px solid var(--accent);
+            font-size: 0.85rem;
+            color: #b0a0d0;
+            text-align: left;
+            line-height: 1.7;
+        }
+        
+        .footer-notes h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-notes h3 i {
+            font-size: 1.4rem;
+        }
+        
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .note-item {
+            background: rgba(106, 90, 249, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 2px solid var(--accent);
+        }
+        
+        .note-title {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .disclaimer {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            font-size: 0.8rem;
+            color: rgba(200, 180, 255, 0.7);
+        }
     </style>
 </head>
 <body>
@@ -628,6 +686,39 @@
             
             <div class="motivation-section">
                 <p>"高考不是终点，而是人生新阶段的起点。你所付出的每一滴汗水，都在为未来铺就坚实的道路。当你在深夜里坚持，在困倦中奋斗，请记住：此刻的努力正在塑造明天的你。"</p>
+            </div>
+        </div>
+        
+        <!-- 底部注释区域 -->
+        <div class="footer-notes">
+            <h3><i class="fas fa-info-circle"></i> 页面说明与注释</h3>
+            <p>本高考倒计时页面专为信丰中学科技营学生设计，旨在帮助学生追踪备考进度，提供学习指导，并传递积极动力。以下是关于本页面的详细说明：</p>
+            
+            <div class="notes-grid">
+                <div class="note-item">
+                    <div class="note-title"><i class="fas fa-calendar-alt"></i> 日期设置说明</div>
+                    <p>高考日期固定为2028年6月7日（星期三），高中开始日期为2025年2月28日。进度计算基于这两个时间点，精确到毫秒级。</p>
+                </div>
+                
+                <div class="note-item">
+                    <div class="note-title"><i class="fas fa-code"></i> 技术实现</div>
+                    <p>页面使用纯HTML/CSS/JavaScript开发，采用Canvas实现动态星空背景。倒计时每秒更新一次，确保精确性。</p>
+                </div>
+                
+                <div class="note-item">
+                    <div class="note-title"><i class="fas fa-quote-right"></i> 励志名言来源</div>
+                    <p>每日名言通过第三方API获取（api.xygeng.cn/one），每天自动更新一次。您也可以手动刷新获取新名言。</p>
+                </div>
+                
+                <div class="note-item">
+                    <div class="note-title"><i class="fas fa-mobile-alt"></i> 响应式设计</div>
+                    <p>页面完全响应式，适配各种设备尺寸：手机（2列倒计时）、平板（4列倒计时）、桌面设备。支持折叠屏和刘海屏。</p>
+                </div>
+            </div>
+            
+            <div class="disclaimer">
+                <p><strong>免责声明：</strong>本页面提供的信息仅供参考，实际高考日期请以教育部门官方通知为准。学习建议基于教育心理学研究，但个体效果可能有所不同。</p>
+                <p>最后更新时间：2025年5月28日 | 设计：深度神经网络 (Deep Neural Network - DNN) & 无际航天</p>
             </div>
         </div>
     </div>
@@ -766,10 +857,10 @@
                 document.getElementById('quote-date').textContent = `名言更新日期: ${dateStr}`;
                 lastQuoteDate = now;
                 
-                document.getElementById('api-status').textContent = "每日名言已更新";
+                document.getElementById('api-status').textContent = "每日励志名言已更新";
             } catch (error) {
                 console.error('获取励志名言失败:', error);
-                document.getElementById('api-status').textContent = "名言获取失败，请检查网络连接";
+                document.getElementById('api-status').textContent = "名言获取失败，使用默认名言";
             }
         }
         
