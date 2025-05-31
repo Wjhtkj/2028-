@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2028高考倒计时 | 支持滚动版</title>
+    <title>2028高考倒计时</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -766,10 +766,10 @@
                 document.getElementById('quote-date').textContent = `名言更新日期: ${dateStr}`;
                 lastQuoteDate = now;
                 
-                document.getElementById('api-status').textContent = "每日励志名言已更新";
+                document.getElementById('api-status').textContent = "每日名言已更新";
             } catch (error) {
                 console.error('获取励志名言失败:', error);
-                document.getElementById('api-status').textContent = "名言获取失败，使用默认名言";
+                document.getElementById('api-status').textContent = "名言获取失败，请检查网络连接";
             }
         }
         
