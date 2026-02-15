@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>2028 高考 · 优雅倒计时</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -20,7 +20,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 16px;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
             background: radial-gradient(circle at 30% 30%, #1a1f28, #0b0e13);
@@ -69,11 +69,7 @@
             gap: 18px;
             margin-bottom: 48px;
         }
-        @media (max-width: 480px) {
-            .countdown-grid {
-                gap: 12px;
-            }
-        }
+
         .digit-block {
             background: rgba(10, 14, 19, 0.6);
             border-radius: 28px;
@@ -82,6 +78,7 @@
             border: 1px solid rgba(68, 88, 108, 0.35);
             box-shadow: 0 8px 0 rgba(0,0,0,0.2);
             transition: transform 0.15s, border-color 0.2s;
+            -webkit-tap-highlight-color: transparent; /* 去掉移动端点击高亮 */
         }
         .digit-block:active {
             transform: translateY(2px);
@@ -162,6 +159,7 @@
             border: 1px solid #3c4d62;
             transition: background 0.2s, color 0.2s, transform 0.1s;
             box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            -webkit-tap-highlight-color: transparent;
         }
         .refresh-btn:hover {
             background: #2d3b4b;
@@ -223,7 +221,6 @@
             font-weight: 500;
         }
 
-        /* 页脚区域 —— 扩展信息 */
         .footer-note {
             margin-top: 40px;
             text-align: center;
@@ -253,7 +250,6 @@
             box-shadow: 0 2px 5px #0a0f14;
         }
 
-        /* 新增页脚声明与设计信息 */
         .footer-disclaimer {
             font-size: 0.72rem;
             color: #7a8ca3;
@@ -293,10 +289,141 @@
             75% { content: '...'; }
         }
 
-        @media (max-width: 450px) {
-            .timepiece { padding: 30px 20px; border-radius: 36px; }
-            .digit { font-size: 2.6rem; }
-            .proverb-text { font-size: 1.1rem; }
+        /* ---------- 手机优化布局 (宽度 ≤ 480px) ---------- */
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            .timepiece {
+                padding: 28px 20px;
+                border-radius: 36px;
+            }
+            .heading {
+                margin-bottom: 32px;
+            }
+            .heading h1 {
+                font-size: 2.2rem;
+            }
+            .heading .meta {
+                font-size: 0.9rem;
+                padding-left: 12px;
+            }
+            /* 倒计时网格：缩小间距，数字略微调小 */
+            .countdown-grid {
+                gap: 10px;
+                margin-bottom: 36px;
+            }
+            .digit-block {
+                padding: 16px 0 10px;
+                border-radius: 22px;
+            }
+            .digit {
+                font-size: 2.6rem;
+            }
+            .label {
+                font-size: 0.65rem;
+                letter-spacing: 2px;
+                margin-top: 6px;
+            }
+            /* 名言卡片 */
+            .proverb {
+                padding: 24px 20px 20px 24px;
+                margin: 30px 0 32px;
+                border-radius: 28px;
+            }
+            .proverb-text {
+                font-size: 1.1rem;
+                padding-right: 40px;
+            }
+            .proverb-text::before {
+                font-size: 1.8rem;
+            }
+            .refresh-btn {
+                top: 18px;
+                right: 18px;
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            /* 进度区域：让指标垂直排列，节省横向空间 */
+            .progress-metrics {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+            .metric-item {
+                width: fit-content;
+                padding: 6px 24px;
+            }
+            .date-labels {
+                font-size: 0.75rem;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+            .date-labels div {
+                white-space: nowrap;
+            }
+            /* 页脚 */
+            .footer-note {
+                margin-top: 30px;
+                padding-top: 22px;
+            }
+            .footer-quote {
+                font-size: 0.85rem;
+            }
+            .api-indicator {
+                padding: 5px 14px;
+                font-size: 0.75rem;
+            }
+            .footer-disclaimer {
+                font-size: 0.68rem;
+                margin-top: 18px;
+                padding-top: 14px;
+            }
+            .footer-meta {
+                font-size: 0.68rem;
+            }
+        }
+
+        /* 更小屏幕 (≤360px) 进一步优化 */
+        @media (max-width: 360px) {
+            .timepiece {
+                padding: 20px 14px;
+            }
+            .countdown-grid {
+                gap: 6px;
+            }
+            .digit {
+                font-size: 2.2rem;
+            }
+            .label {
+                font-size: 0.55rem;
+                letter-spacing: 1px;
+            }
+            .proverb-text {
+                font-size: 1rem;
+            }
+            .proverb-author {
+                font-size: 0.9rem;
+            }
+            .metric-item {
+                font-size: 0.8rem;
+                padding: 5px 18px;
+            }
+            .date-labels {
+                font-size: 0.7rem;
+            }
+        }
+
+        /* 适配刘海屏/圆角屏 */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: max(16px, env(safe-area-inset-left));
+                padding-right: max(16px, env(safe-area-inset-right));
+                padding-top: max(16px, env(safe-area-inset-top));
+                padding-bottom: max(16px, env(safe-area-inset-bottom));
+            }
         }
     </style>
 </head>
@@ -352,18 +479,16 @@
             </div>
         </div>
 
-        <!-- 页脚：原有励志语 + API状态 + 新增免责与设计信息 -->
+        <!-- 页脚 -->
         <div class="footer-note">
             <div class="footer-quote">
                 <i class="fa-regular fa-star"></i> 每一天都是离梦想更近的一步 <i class="fa-regular fa-star"></i>
             </div>
             <div class="api-indicator" id="apiStatus">每日一言 · 获取中…</div>
 
-            <!-- 新增免责声明 -->
             <div class="footer-disclaimer">
                 <i class="fa-regular fa-circle-info"></i> 免责声明：本页面提供的信息仅供参考，实际高考日期请以教育部门官方通知为准。
             </div>
-            <!-- 最后更新时间 & 设计者 (动态更新最后更新时间) -->
             <div class="footer-meta">
                 <span>最后更新时间：<span id="lastUpdated"></span> | 设计：深度神经网络 (Deep Neural Network - DNN) & 无际航天</span>
             </div>
@@ -376,7 +501,6 @@
             const TARGET_DATE = new Date('2028-06-07T09:00:00');
             const QUOTE_API = 'https://api.xygeng.cn/one';
 
-            // 元素
             const daysEl = document.getElementById('days');
             const hoursEl = document.getElementById('hours');
             const minutesEl = document.getElementById('minutes');
@@ -389,7 +513,7 @@
             const apiStatus = document.getElementById('apiStatus');
             const lastUpdatedSpan = document.getElementById('lastUpdated');
 
-            // 设置最后更新时间 (当前日期)
+            // 设置最后更新时间
             const nowDate = new Date();
             const year = nowDate.getFullYear();
             const month = nowDate.getMonth() + 1;
