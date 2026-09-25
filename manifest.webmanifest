@@ -1,0 +1,19 @@
+{
+  "name": "2028 高考倒计时",
+  "short_name": "2028高考",
+  "description": "2028 年高考倒计时 · 高中进度追踪 · 每日一言",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef1f7",
+  "theme_color": "#eef1f7",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+/* =============================================================
+   layout.css — 页面骨架与区块布局（玻璃拟态）
+   ============================================================= */
+
+/* 舞台：垂直 + 水平居中，兼容刘海屏 */
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: var(--sp-6) var(--sp-4);
+}
+
+@supports (padding: max(0px)) {
+  .stage {
+    padding-left:  max(var(--sp-4), env(safe-area-inset-left));
+    padding-right: max(var(--sp-4), env(safe-area-inset-right));
+    padding-top:    max(var(--sp-6), env(safe-area-inset-top));
+    padding-bottom: max(var(--sp-6), env(safe-area-inset-bottom));
+  }
+}
+
+/* ---------- 主玻璃卡 ---------- */
+.card {
+  width: 100%;
+  max-width: 640px;
+  padding: var(--sp-6) var(--sp-5);
+  border-radius: var(--r-lg);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-card), inset 0 1px 0 var(--glass-highlight);
+  backdrop-filter: blur(var(--blur)) saturate(170%);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(170%);
+  animation: card-in var(--dur-slow) var(--ease-out) both;
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.99); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* —— 卡片头部 —— */
+.card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-6);
+}
+
+.head__text { min-width: 0; }
+
+/* —— 区块通用间距 —— */
+.card > section + section { margin-top: var(--sp-6); }
+
+/* —— 页脚 —— */
+.card__foot {
+  margin-top: var(--sp-6);
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--glass-border-soft);
+  text-align: center;
+}
+
+/* —— 窄屏 —— */
+@media (max-width: 560px) {
+  .stage { padding: var(--sp-4) var(--sp-3); }
+  .card {
+    padding: var(--sp-5) var(--sp-4);
+    border-radius: 26px;
+  }
+  .card > section + section { margin-top: var(--sp-5); }
+}

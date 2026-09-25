@@ -1,709 +1,185 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>2028高考倒计时</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="2028 年高考倒计时 · 高中进度追踪 · 每日一言">
+  <meta name="theme-color" content="#0d1017" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#eef1f7" media="(prefers-color-scheme: light)">
+  <meta property="og:title" content="2028 高考倒计时">
+  <meta property="og:description" content="向着月亮出发，即使不能到达，也能站在群星之中。">
 
-        /* 定义深色主题变量 (默认) */
-        :root {
-            --bg-gradient-start: #1a1f28;
-            --bg-gradient-end: #0b0e13;
-            --card-bg: rgba(22, 28, 36, 0.75);
-            --card-border: rgba(72, 92, 124, 0.25);
-            --text-primary: #eef3f9;
-            --text-secondary: #96a7bc;
-            --text-muted: #7e93af;
-            --digit-bg: rgba(10, 14, 19, 0.6);
-            --digit-border: rgba(68, 88, 108, 0.35);
-            --digit-shadow: 0 8px 0 rgba(0,0,0,0.2);
-            --proverb-bg: rgba(18, 25, 34, 0.7);
-            --proverb-border: #2c3847;
-            --proverb-text: #dae6f5;
-            --author-color: #8fa5c2;
-            --refresh-btn-bg: #232e3b;
-            --refresh-btn-border: #3c4d62;
-            --refresh-btn-color: #a6bedb;
-            --progress-track-bg: #1d262f;
-            --metric-bg: #1b242e;
-            --metric-border: #2f3e4e;
-            --metric-text: #d2e1f5;
-            --date-label-color: #6f859e;
-            --footer-border: #26303c;
-            --footer-text: #a6bbd3;
-            --api-bg: #1c2632;
-            --api-border: #354556;
-            --api-color: #b6cbe5;
-            --disclaimer-color: #7a8ca3;
-            --meta-color: #68809b;
-            --heading-gradient-start: #e4ecff;
-            --heading-gradient-end: #b6c8e5;
-            --left-accent: #40536c;
-        }
+  <title>2028 高考倒计时</title>
 
-        /* 浅色主题变量 (跟随系统) */
-        @media (prefers-color-scheme: light) {
-            :root {
-                --bg-gradient-start: #e8ecf2;
-                --bg-gradient-end: #d0d9e6;
-                --card-bg: rgba(255, 255, 255, 0.7);
-                --card-border: rgba(100, 120, 140, 0.3);
-                --text-primary: #1e2a36;
-                --text-secondary: #3e4f62;
-                --text-muted: #5b6f84;
-                --digit-bg: rgba(240, 244, 250, 0.8);
-                --digit-border: rgba(120, 140, 160, 0.3);
-                --digit-shadow: 0 6px 0 rgba(0,0,0,0.1);
-                --proverb-bg: rgba(245, 248, 252, 0.8);
-                --proverb-border: #b0c0d0;
-                --proverb-text: #1e2f40;
-                --author-color: #3b5b7a;
-                --refresh-btn-bg: #dce5f0;
-                --refresh-btn-border: #a0b2c8;
-                --refresh-btn-color: #2b4b70;
-                --progress-track-bg: #cbd5e2;
-                --metric-bg: #eef2f8;
-                --metric-border: #b8c7db;
-                --metric-text: #1e3a5f;
-                --date-label-color: #3f5b7a;
-                --footer-border: #b8c7da;
-                --footer-text: #2a4b70;
-                --api-bg: #e4ecf7;
-                --api-border: #a7bbd3;
-                --api-color: #1c3f62;
-                --disclaimer-color: #4f6682;
-                --meta-color: #46618a;
-                --heading-gradient-start: #2a4b70;
-                --heading-gradient-end: #4f6f94;
-                --left-accent: #5f7fa0;
-            }
-        }
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
 
-        body {
-            background: var(--bg-gradient-start);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            background: radial-gradient(circle at 30% 30%, var(--bg-gradient-start), var(--bg-gradient-end));
-        }
-
-        .timepiece {
-            max-width: 620px;
-            width: 100%;
-            background: var(--card-bg);
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border-radius: 48px;
-            padding: 40px 32px;
-            box-shadow: 0 30px 50px -20px rgba(0,0,0,0.8), 0 0 0 1px var(--card-border) inset;
-            transition: box-shadow 0.3s;
-        }
-
-        .heading {
-            margin-bottom: 44px;
-            text-align: left;
-            padding-left: 6px;
-        }
-        .heading h1 {
-            font-size: 2.6rem;
-            font-weight: 500;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, var(--heading-gradient-start), var(--heading-gradient-end));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            line-height: 1.1;
-            margin-bottom: 8px;
-        }
-        .heading .meta {
-            font-size: 1rem;
-            font-weight: 350;
-            color: var(--text-secondary);
-            border-left: 3px solid var(--left-accent);
-            padding-left: 18px;
-            margin-top: 6px;
-        }
-
-        .countdown-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-            margin-bottom: 48px;
-        }
-
-        .digit-block {
-            background: var(--digit-bg);
-            border-radius: 28px;
-            padding: 20px 0 14px;
-            text-align: center;
-            border: 1px solid var(--digit-border);
-            box-shadow: var(--digit-shadow);
-            transition: transform 0.15s, border-color 0.2s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .digit-block:active {
-            transform: translateY(2px);
-            border-color: #5f7a9a;
-        }
-        .digit {
-            font-size: 3.2rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            text-shadow: 0 2px 5px rgba(0,30,60,0.5);
-            line-height: 1;
-            font-feature-settings: "tnum";
-            transition: color 0.2s, transform 0.2s;
-        }
-        .digit.smooth-change {
-            color: var(--heading-gradient-start);
-            transform: scale(1.02);
-        }
-        .label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--text-muted);
-            margin-top: 10px;
-            font-weight: 400;
-        }
-
-        .proverb {
-            background: var(--proverb-bg);
-            border-radius: 34px;
-            padding: 30px 30px 24px 34px;
-            margin: 40px 0 42px;
-            border: 1px solid var(--proverb-border);
-            box-shadow: 0 20px 25px -15px #030405;
-            position: relative;
-        }
-        .proverb-text {
-            font-size: 1.3rem;
-            font-weight: 330;
-            line-height: 1.6;
-            color: var(--proverb-text);
-            quotes: "“" "”";
-            font-style: normal;
-            padding-right: 48px;
-        }
-        .proverb-text::before {
-            content: "“";
-            font-size: 2.2rem;
-            color: var(--left-accent);
-            margin-right: 6px;
-            font-weight: 400;
-        }
-        .proverb-author {
-            text-align: right;
-            margin-top: 22px;
-            font-size: 1rem;
-            color: var(--author-color);
-            font-weight: 330;
-            border-top: 1px dashed var(--footer-border);
-            padding-top: 18px;
-            letter-spacing: 0.5px;
-        }
-        .refresh-btn {
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            background: var(--refresh-btn-bg);
-            border: none;
-            color: var(--refresh-btn-color);
-            width: 44px;
-            height: 44px;
-            border-radius: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            cursor: pointer;
-            border: 1px solid var(--refresh-btn-border);
-            transition: background 0.2s, color 0.2s, transform 0.1s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-            -webkit-tap-highlight-color: transparent;
-        }
-        .refresh-btn:hover {
-            background: var(--metric-bg);
-            color: var(--heading-gradient-start);
-        }
-        .refresh-btn:active {
-            transform: scale(0.94);
-        }
-
-        .progress-area {
-            margin: 40px 0 32px;
-        }
-        .progress-track {
-            background: var(--progress-track-bg);
-            height: 8px;
-            border-radius: 20px;
-            box-shadow: inset 0 2px 4px #0a0e12;
-        }
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, var(--heading-gradient-start), var(--heading-gradient-end));
-            border-radius: 20px;
-            transition: width 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
-            box-shadow: 0 0 10px var(--heading-gradient-start);
-        }
-        .progress-metrics {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            gap: 10px;
-        }
-        .metric-item {
-            background: var(--metric-bg);
-            padding: 8px 20px;
-            border-radius: 40px;
-            border: 1px solid var(--metric-border);
-            color: var(--metric-text);
-            font-weight: 420;
-        }
-        .metric-item span {
-            color: var(--left-accent);
-            font-weight: 350;
-            margin-right: 4px;
-        }
-        .date-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            color: var(--date-label-color);
-            margin-top: 14px;
-            padding: 0 8px;
-        }
-        .date-labels strong {
-            color: var(--left-accent);
-            font-weight: 500;
-        }
-
-        .footer-note {
-            margin-top: 40px;
-            text-align: center;
-            border-top: 1px solid var(--footer-border);
-            padding-top: 28px;
-        }
-        .footer-quote {
-            font-size: 0.95rem;
-            color: var(--footer-text);
-            font-weight: 330;
-            letter-spacing: 0.2px;
-            margin-bottom: 14px;
-        }
-        .footer-quote i {
-            color: var(--left-accent);
-            margin: 0 6px;
-            font-size: 0.8rem;
-        }
-        .api-indicator {
-            display: inline-block;
-            background: var(--api-bg);
-            padding: 6px 18px;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            border: 1px solid var(--api-border);
-            color: var(--api-color);
-            box-shadow: 0 2px 5px #0a0f14;
-        }
-
-        .footer-disclaimer {
-            font-size: 0.72rem;
-            color: var(--disclaimer-color);
-            margin-top: 22px;
-            font-style: italic;
-            border-top: 1px dashed var(--footer-border);
-            padding-top: 18px;
-            line-height: 1.6;
-        }
-        .footer-meta {
-            font-size: 0.72rem;
-            color: var(--meta-color);
-            margin-top: 8px;
-            letter-spacing: 0.2px;
-        }
-        .footer-meta i {
-            color: var(--left-accent);
-            margin: 0 4px;
-        }
-
-        .fade-quote {
-            animation: appear 0.3s ease;
-        }
-        @keyframes appear {
-            0% { opacity: 0.6; transform: translateY(4px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .loading-dots:after {
-            content: '';
-            animation: ellipsis 1.2s infinite;
-        }
-        @keyframes ellipsis {
-            0% { content: ''; }
-            25% { content: '.'; }
-            50% { content: '..'; }
-            75% { content: '...'; }
-        }
-
-        /* 手机优化布局 (宽度 ≤ 480px) */
-        @media (max-width: 480px) {
-            body {
-                padding: 12px;
-            }
-            .timepiece {
-                padding: 28px 20px;
-                border-radius: 36px;
-            }
-            .heading {
-                margin-bottom: 32px;
-            }
-            .heading h1 {
-                font-size: 2.2rem;
-            }
-            .heading .meta {
-                font-size: 0.9rem;
-                padding-left: 12px;
-            }
-            .countdown-grid {
-                gap: 10px;
-                margin-bottom: 36px;
-            }
-            .digit-block {
-                padding: 16px 0 10px;
-                border-radius: 22px;
-            }
-            .digit {
-                font-size: 2.6rem;
-            }
-            .label {
-                font-size: 0.65rem;
-                letter-spacing: 2px;
-                margin-top: 6px;
-            }
-            .proverb {
-                padding: 24px 20px 20px 24px;
-                margin: 30px 0 32px;
-                border-radius: 28px;
-            }
-            .proverb-text {
-                font-size: 1.1rem;
-                padding-right: 40px;
-            }
-            .proverb-text::before {
-                font-size: 1.8rem;
-            }
-            .refresh-btn {
-                top: 18px;
-                right: 18px;
-                width: 40px;
-                height: 40px;
-                font-size: 1rem;
-            }
-            .progress-metrics {
-                flex-direction: column;
-                align-items: center;
-                gap: 8px;
-            }
-            .metric-item {
-                width: fit-content;
-                padding: 6px 24px;
-            }
-            .date-labels {
-                font-size: 0.75rem;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 12px;
-            }
-            .date-labels div {
-                white-space: nowrap;
-            }
-            .footer-note {
-                margin-top: 30px;
-                padding-top: 22px;
-            }
-            .footer-quote {
-                font-size: 0.85rem;
-            }
-            .api-indicator {
-                padding: 5px 14px;
-                font-size: 0.75rem;
-            }
-            .footer-disclaimer {
-                font-size: 0.68rem;
-                margin-top: 18px;
-                padding-top: 14px;
-            }
-            .footer-meta {
-                font-size: 0.68rem;
-            }
-        }
-
-        /* 更小屏幕 (≤360px) 进一步优化 */
-        @media (max-width: 360px) {
-            .timepiece {
-                padding: 20px 14px;
-            }
-            .countdown-grid {
-                gap: 6px;
-            }
-            .digit {
-                font-size: 2.2rem;
-            }
-            .label {
-                font-size: 0.55rem;
-                letter-spacing: 1px;
-            }
-            .proverb-text {
-                font-size: 1rem;
-            }
-            .proverb-author {
-                font-size: 0.9rem;
-            }
-            .metric-item {
-                font-size: 0.8rem;
-                padding: 5px 18px;
-            }
-            .date-labels {
-                font-size: 0.7rem;
-            }
-        }
-
-        /* 适配刘海屏/圆角屏 */
-        @supports (padding: max(0px)) {
-            body {
-                padding-left: max(16px, env(safe-area-inset-left));
-                padding-right: max(16px, env(safe-area-inset-right));
-                padding-top: max(16px, env(safe-area-inset-top));
-                padding-bottom: max(16px, env(safe-area-inset-bottom));
-            }
-        }
-    </style>
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
 </head>
 <body>
-    <div class="timepiece">
-        <!-- 头部 -->
-        <div class="heading">
-            <h1>2028 高考</h1>
-            <div class="meta">2028.06.07 · 星期三</div>
+
+  <!-- 柔光背景：玻璃需要有东西可以透。纯 CSS，无 JS 也能显示 -->
+  <div class="backdrop" aria-hidden="true">
+    <span class="blob blob--1"></span>
+    <span class="blob blob--2"></span>
+    <span class="blob blob--3"></span>
+  </div>
+
+  <!-- SVG 图标精灵：内联以避免任何外部请求 -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+    </symbol>
+    <symbol id="i-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="4" width="20" height="13" rx="2"/>
+      <path d="M8 21h8M12 17v4"/>
+    </symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12a9 9 0 1 1-3.2-6.9"/><path d="M21 4v5h-5"/>
+    </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+    </symbol>
+    <symbol id="i-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m12 3 2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-3-5.3 3 1.1-6L3.4 9.4l6-.8z"/>
+    </symbol>
+  </svg>
+
+  <main class="stage">
+    <article class="card">
+
+      <!-- ========== 头部：标题 + 主题切换 ========== -->
+      <header class="card__head">
+        <div class="head__text">
+          <p class="eyebrow">Countdown</p>
+          <h1 class="title" id="examName">2028 高考</h1>
+          <p class="subtitle">
+            <b id="examDate">2028.06.07</b> · <span id="examWeekday">星期三</span>
+            <span id="examClock"></span>
+          </p>
+        </div>
+        <button class="icon-btn" id="themeToggle" type="button"
+                aria-label="切换主题" title="切换主题">
+          <svg aria-hidden="true"><use id="themeIcon" href="#i-auto"></use></svg>
+        </button>
+      </header>
+
+      <!-- ========== 倒计时 ========== -->
+      <section>
+        <div class="countdown" id="countdown" role="timer" aria-live="off">
+          <div class="unit" data-unit="days">
+            <span class="unit__value tnum" data-value="days">--</span>
+            <span class="unit__label">Days</span>
+          </div>
+          <div class="unit" data-unit="hours">
+            <span class="unit__value tnum" data-value="hours">--</span>
+            <span class="unit__label">Hours</span>
+          </div>
+          <div class="unit" data-unit="minutes">
+            <span class="unit__value tnum" data-value="minutes">--</span>
+            <span class="unit__label">Minutes</span>
+          </div>
+          <div class="unit" data-unit="seconds">
+            <span class="unit__value tnum" data-value="seconds">--</span>
+            <span class="unit__label">Seconds</span>
+          </div>
+        </div>
+        <p class="sr-only" id="srStatus" aria-live="polite"></p>
+      </section>
+
+      <!-- ========== 抵达横幅 ========== -->
+      <section>
+        <div class="reached" id="reachedBanner">
+          <svg aria-hidden="true"><use href="#i-star"></use></svg>
+          <span>已抵达。愿你落笔生花，金榜题名。</span>
+        </div>
+      </section>
+
+      <!-- ========== 进度 ========== -->
+      <section class="progress" aria-labelledby="progressTitle">
+        <div class="progress__head">
+          <h2 id="progressTitle">高中进度</h2>
+          <b class="tnum" id="progressPercent">0%</b>
         </div>
 
-        <!-- 倒计时网格 -->
-        <div class="countdown-grid">
-            <div class="digit-block">
-                <div class="digit" id="days">365</div>
-                <div class="label">DAYS</div>
-            </div>
-            <div class="digit-block">
-                <div class="digit" id="hours">00</div>
-                <div class="label">HOURS</div>
-            </div>
-            <div class="digit-block">
-                <div class="digit" id="minutes">00</div>
-                <div class="label">MINUTES</div>
-            </div>
-            <div class="digit-block">
-                <div class="digit" id="seconds">00</div>
-                <div class="label">SECONDS</div>
-            </div>
+        <div class="progress__track" role="progressbar"
+             aria-labelledby="progressTitle"
+             aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+             id="progressBar">
+          <div class="progress__fill" id="progressFill"></div>
+          <span class="progress__marker" id="progressMarker"></span>
         </div>
 
-        <!-- 箴言卡片 -->
-        <div class="proverb" id="quoteBlock">
-            <button class="refresh-btn" id="refreshBtn" title="换一句"><i class="fas fa-rotate-right"></i></button>
-            <div id="quoteContent">
-                <div class="proverb-text">向着月亮出发，即使不能到达，也能站在群星之中。</div>
-                <div class="proverb-author">—— 佚名</div>
-            </div>
+        <div class="progress__ends">
+          <span><b id="startLabel">2025.02.28</b> 启程</span>
+          <span><b id="targetLabel">2028.06.07</b> 抵达</span>
         </div>
 
-        <!-- 进度条 -->
-        <div class="progress-area">
-            <div class="progress-track">
-                <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
-            </div>
-            <div class="progress-metrics">
-                <div class="metric-item"><span>高中进度</span> <span id="progressPercent">0%</span></div>
-                <div class="metric-item"><span>已过</span> <span id="passedDays">0</span> 天</div>
-            </div>
-            <div class="date-labels">
-                <div><strong>2025.02.28</strong> 启程</div>
-                <div><strong>2028.06.07</strong> 抵达</div>
-            </div>
+        <ul class="stats">
+          <li class="stat">
+            <span class="stat__value tnum" id="statElapsed">--</span>
+            <span class="stat__key">已过天数</span>
+          </li>
+          <li class="stat">
+            <span class="stat__value tnum" id="statRemain">--</span>
+            <span class="stat__key">剩余天数</span>
+          </li>
+          <li class="stat">
+            <span class="stat__value tnum" id="statTotal">--</span>
+            <span class="stat__key">全程天数</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ========== 每日一言 ========== -->
+      <section class="quote">
+        <span class="quote__mark" aria-hidden="true">&ldquo;</span>
+        <button class="quote__refresh" id="quoteRefresh" type="button"
+                aria-label="换一句话" title="换一句话">
+          <svg aria-hidden="true"><use href="#i-refresh"></use></svg>
+        </button>
+        <blockquote class="quote__text" id="quoteText">正在为你取一句话……</blockquote>
+        <p class="quote__author" id="quoteAuthor"></p>
+      </section>
+
+      <!-- ========== 页脚 ========== -->
+      <footer class="card__foot">
+        <p class="foot__quote">每一天，都是离梦想更近的一步。</p>
+
+        <div class="foot__actions">
+          <button class="btn" id="shareBtn" type="button">
+            <svg aria-hidden="true"><use href="#i-copy"></use></svg>
+            <span>复制当前状态</span>
+          </button>
+          <span class="badge is-load" id="quoteBadge">
+            <span class="badge__dot"></span>
+            <span id="quoteBadgeText">每日一言 · 获取中</span>
+          </span>
         </div>
 
-        <!-- 页脚 -->
-        <div class="footer-note">
-            <div class="footer-quote">
-                <i class="fa-regular fa-star"></i> 每一天都是离梦想更近的一步 <i class="fa-regular fa-star"></i>
-            </div>
-            <div class="api-indicator" id="apiStatus">每日一言 · 获取中…</div>
+        <p class="foot__note">
+          免责声明：本页信息仅供参考，实际高考日期请以教育部门官方通知为准。<br>
+          最后更新：<span id="lastUpdated">--</span>
+        </p>
+        <p class="foot__meta">设计：深度神经网络（DNN） &amp; 无际航天</p>
+      </footer>
 
-            <div class="footer-disclaimer">
-                <i class="fa-regular fa-circle-info"></i> 免责声明：本页面提供的信息仅供参考，实际高考日期请以教育部门官方通知为准。
-            </div>
-            <div class="footer-meta">
-                <span>最后更新时间：<span id="lastUpdated"></span> | 设计：深度神经网络 (Deep Neural Network - DNN) & 无际航天</span>
-            </div>
-        </div>
-    </div>
+    </article>
+  </main>
 
-    <script>
-        (function() {
-            const START_DATE = new Date('2025-02-28T00:00:00');
-            const TARGET_DATE = new Date('2028-06-07T09:00:00');
-            const QUOTE_API = 'https://api.xygeng.cn/one';
+  <noscript>
+    <p style="text-align:center;padding:24px;color:#9aadc6">
+      本页的倒计时需要 JavaScript 才能运行，请在浏览器中启用后刷新。
+    </p>
+  </noscript>
 
-            const daysEl = document.getElementById('days');
-            const hoursEl = document.getElementById('hours');
-            const minutesEl = document.getElementById('minutes');
-            const secondsEl = document.getElementById('seconds');
-            const progressFill = document.getElementById('progressFill');
-            const progressPercent = document.getElementById('progressPercent');
-            const passedDaysEl = document.getElementById('passedDays');
-            const quoteContent = document.getElementById('quoteContent');
-            const refreshBtn = document.getElementById('refreshBtn');
-            const apiStatus = document.getElementById('apiStatus');
-            const lastUpdatedSpan = document.getElementById('lastUpdated');
-
-            // 设置最后更新时间
-            const nowDate = new Date();
-            const year = nowDate.getFullYear();
-            const month = nowDate.getMonth() + 1;
-            const day = nowDate.getDate();
-            lastUpdatedSpan.textContent = `${year}年${month}月${day}日`;
-
-            let last = { days: -1, hours: -1, minutes: -1, seconds: -1, progress: -1, passed: -1 };
-            let lastQuoteDay = '';
-
-            const pad = n => n.toString().padStart(2, '0');
-
-            function updateDigit(el, newVal) {
-                if (el.textContent !== newVal) {
-                    el.classList.add('smooth-change');
-                    el.textContent = newVal;
-                    setTimeout(() => el.classList.remove('smooth-change'), 150);
-                }
-            }
-
-            function refreshDisplay() {
-                const now = new Date();
-                const remaining = TARGET_DATE - now;
-
-                if (remaining <= 0) {
-                    updateDigit(daysEl, '00');
-                    updateDigit(hoursEl, '00');
-                    updateDigit(minutesEl, '00');
-                    updateDigit(secondsEl, '00');
-                    return;
-                }
-
-                const days = Math.floor(remaining / 86400000);
-                const hours = Math.floor((remaining % 86400000) / 3600000);
-                const mins = Math.floor((remaining % 3600000) / 60000);
-                const secs = Math.floor((remaining % 60000) / 1000);
-
-                if (days !== last.days) { updateDigit(daysEl, days); last.days = days; }
-                if (hours !== last.hours) { updateDigit(hoursEl, pad(hours)); last.hours = hours; }
-                if (mins !== last.minutes) { updateDigit(minutesEl, pad(mins)); last.minutes = mins; }
-                if (secs !== last.seconds) { updateDigit(secondsEl, pad(secs)); last.seconds = secs; }
-
-                const totalDuration = TARGET_DATE - START_DATE;
-                const elapsed = now - START_DATE;
-                let prog = (elapsed / totalDuration) * 100;
-                prog = Math.min(100, Math.max(0, prog));
-                const roundedProg = Math.round(prog * 10) / 10;
-                const passed = Math.floor(elapsed / 86400000);
-
-                if (Math.abs(roundedProg - last.progress) > 0.01) {
-                    progressFill.style.width = roundedProg + '%';
-                    progressPercent.textContent = roundedProg + '%';
-                    last.progress = roundedProg;
-                }
-                if (passed !== last.passed) {
-                    passedDaysEl.textContent = passed;
-                    last.passed = passed;
-                }
-            }
-
-            async function fetchQuote() {
-                apiStatus.textContent = '获取中…';
-                apiStatus.classList.add('loading-dots');
-                try {
-                    const resp = await fetch(QUOTE_API, { signal: AbortSignal.timeout(5000) });
-                    if (!resp.ok) throw new Error();
-                    const json = await resp.json();
-                    let text = json?.data?.content || '若不给自己设限，人生中就没有限制你发挥的藩篱。';
-                    let author = json?.data?.origin || '佚名';
-
-                    text = text.replace(/[<>&]/g, c => ({ '<':'&lt;', '>':'&gt;', '&':'&amp;' }[c]));
-                    author = author.replace(/[<>&]/g, c => ({ '<':'&lt;', '>':'&gt;', '&':'&amp;' }[c]));
-
-                    quoteContent.innerHTML = `
-                        <div class="proverb-text fade-quote">${text}</div>
-                        <div class="proverb-author fade-quote">—— ${author}</div>
-                    `;
-                    apiStatus.textContent = '每日一言 · 已更新';
-                } catch {
-                    quoteContent.innerHTML = `
-                        <div class="proverb-text">从来不是让你把一次考试当作人生成败的赌注，只是想让你在年轻的时候体会一次全力以赴。</div>
-                        <div class="proverb-author">—— 《请回答1988》</div>
-                    `;
-                    apiStatus.textContent = '暂无网络，本地句子';
-                } finally {
-                    apiStatus.classList.remove('loading-dots');
-                }
-            }
-
-            function checkDateChange() {
-                const today = new Date().toDateString();
-                if (lastQuoteDay !== today) {
-                    lastQuoteDay = today;
-                    fetchQuote();
-                }
-            }
-
-            refreshBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                fetchQuote();
-            });
-
-            function init() {
-                refreshDisplay();
-                fetchQuote();
-                lastQuoteDay = new Date().toDateString();
-
-                let lastTime = 0;
-                function loop(now) {
-                    if (now - lastTime >= 1000) {
-                        refreshDisplay();
-                        checkDateChange();
-                        lastTime = now;
-                    }
-                    requestAnimationFrame(loop);
-                }
-                requestAnimationFrame(loop);
-            }
-
-            init();
-        })();
-    </script>
+  <script type="module" src="assets/js/main.js"></script>
 </body>
 </html>

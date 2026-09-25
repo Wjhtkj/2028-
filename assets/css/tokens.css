@@ -1,0 +1,133 @@
+/* =============================================================
+   tokens.css — 设计令牌（玻璃拟态 · 极简）
+   全站唯一的"样式来源"。改配色只需改这里。
+   ============================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* —— 背景基底与柔光斑（玻璃需要有东西可以"透"） —— */
+  --bg-base: #eef1f7;
+  --blob-1: #b9d0ff;
+  --blob-2: #d9cfff;
+  --blob-3: #ffdcc9;
+  --blob-opacity: 0.7;
+
+  /* —— 玻璃层：由外到内 —— */
+  --glass:       rgba(255, 255, 255, 0.55);
+  --glass-2:     rgba(255, 255, 255, 0.42);
+  --glass-3:     rgba(255, 255, 255, 0.66);
+  --glass-border:      rgba(255, 255, 255, 0.75);
+  --glass-border-soft: rgba(255, 255, 255, 0.45);
+  --glass-highlight:   rgba(255, 255, 255, 0.9);
+  --blur: 26px;
+
+  /* —— 文本层级 —— */
+  --text-1: #1b2432;
+  --text-2: #566579;
+  --text-3: #8a97a9;
+
+  /* —— 强调色：单一色系，克制使用 —— */
+  --accent:      #4f74ff;
+  --accent-2:    #8a6bff;
+  --accent-soft: rgba(79, 116, 255, 0.12);
+
+  /* —— 阴影：极软，不用重投影 —— */
+  --shadow-card: 0 24px 60px -30px rgba(31, 45, 74, 0.30);
+  --shadow-soft: 0 8px 22px -16px rgba(31, 45, 74, 0.28);
+
+  /* —— 分隔线 —— */
+  --divider: rgba(27, 36, 50, 0.08);
+
+  /* —— 圆角：玻璃爱大圆角 —— */
+  --r-lg: 32px;
+  --r-md: 20px;
+  --r-sm: 14px;
+  --r-pill: 999px;
+
+  /* —— 间距节奏 —— */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 18px;
+  --sp-5: 26px;
+  --sp-6: 36px;
+  --sp-7: 52px;
+
+  /* —— 字体 —— */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+               Roboto, Helvetica, Arial, sans-serif;
+
+  /* —— 动效 —— */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 140ms;
+  --dur-mid:  320ms;
+  --dur-slow: 620ms;
+}
+
+/* ===== 深色：玻璃转为"深色毛玻璃"，光斑压暗压灰 ===== */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-base: #0d1017;
+  --blob-1: #2b3f78;
+  --blob-2: #3a2c66;
+  --blob-3: #1c4450;
+  --blob-opacity: 0.55;
+
+  --glass:       rgba(255, 255, 255, 0.07);
+  --glass-2:     rgba(255, 255, 255, 0.05);
+  --glass-3:     rgba(255, 255, 255, 0.11);
+  --glass-border:      rgba(255, 255, 255, 0.16);
+  --glass-border-soft: rgba(255, 255, 255, 0.09);
+  --glass-highlight:   rgba(255, 255, 255, 0.14);
+  --blur: 22px;
+
+  --text-1: #eef2f8;
+  --text-2: #a3b0c2;
+  --text-3: #6f7d90;
+
+  --accent:      #86a8ff;
+  --accent-2:    #b79bff;
+  --accent-soft: rgba(134, 168, 255, 0.16);
+
+  --shadow-card: 0 24px 60px -30px rgba(0, 0, 0, 0.7);
+  --shadow-soft: 0 8px 22px -16px rgba(0, 0, 0, 0.6);
+
+  --divider: rgba(255, 255, 255, 0.09);
+}
+
+/* 跟随系统：仅在用户未手动锁定主题时生效 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg-base: #0d1017;
+    --blob-1: #2b3f78;
+    --blob-2: #3a2c66;
+    --blob-3: #1c4450;
+    --blob-opacity: 0.55;
+
+    --glass:       rgba(255, 255, 255, 0.07);
+    --glass-2:     rgba(255, 255, 255, 0.05);
+    --glass-3:     rgba(255, 255, 255, 0.11);
+    --glass-border:      rgba(255, 255, 255, 0.16);
+    --glass-border-soft: rgba(255, 255, 255, 0.09);
+    --glass-highlight:   rgba(255, 255, 255, 0.14);
+    --blur: 22px;
+
+    --text-1: #eef2f8;
+    --text-2: #a3b0c2;
+    --text-3: #6f7d90;
+
+    --accent:      #86a8ff;
+    --accent-2:    #b79bff;
+    --accent-soft: rgba(134, 168, 255, 0.16);
+
+    --shadow-card: 0 24px 60px -30px rgba(0, 0, 0, 0.7);
+    --shadow-soft: 0 8px 22px -16px rgba(0, 0, 0, 0.6);
+
+    --divider: rgba(255, 255, 255, 0.09);
+  }
+}
