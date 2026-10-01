@@ -13,6 +13,7 @@ import { createCountdown } from './modules/countdown.js';
 import { createProgress }  from './modules/progress.js';
 import { createQuotes }    from './modules/quotes.js';
 import { createShare }     from './modules/share.js';
+import { createHolidayTheme } from './modules/holidayTheme.js';
 
 function boot() {
   const start  = toDate(CONFIG.timeline.start);
@@ -34,6 +35,9 @@ function boot() {
   /* ---------- 模块装配 ---------- */
   /* 主题：只翻 data-theme 开关，配色全部由 CSS 变量承担 */
   createTheme(CONFIG.theme);
+
+  /* 节日自动主题：命中时设 data-festival，强制覆盖当日浅/深主题，次晨恢复 */
+  const holidayTheme = createHolidayTheme({ enabled: CONFIG.festival?.enabled ?? true });
 
   const countdown = createCountdown({
     root: $('#countdown'),
@@ -94,6 +98,7 @@ function boot() {
       state.stats = progress.update(now);
       syncBanner(state.parts.passed);
       quotes.refreshIfNewDay();
+      holidayTheme.update(now);
     },
   });
 
@@ -102,6 +107,7 @@ function boot() {
   state.parts = countdown.update(first);
   state.stats = progress.update(first);
   syncBanner(state.parts.passed);
+  holidayTheme.update(first);
 
   quotes.load();
   ticker.start();

@@ -47,14 +47,16 @@ npx serve .
         │   ├── ticker.js       统一心跳源
         │   ├── storage.js      localStorage 安全封装
         │   └── dom.js          DOM 工具（脏检查、事件、一次性动画）
-        ├── data/
-        │   └── quotes.js       本地句库（离线兜底）
-        ├── modules/            业务模块（各自独立、可单独替换）
-        │   ├── countdown.js    倒计时显示
-        │   ├── progress.js     高中进度条
-        │   ├── quotes.js       每日一言
-        │   ├── theme.js        三态主题
-        │   └── share.js        复制状态到剪贴板
+    ├── data/
+    │   ├── festivals.js    节日公历日期表（自动主题数据源）
+    │   └── quotes.js       本地句库（离线兜底）
+    ├── modules/            业务模块（各自独立、可单独替换）
+    │   ├── countdown.js    倒计时显示
+    │   ├── progress.js     高中进度条
+    │   ├── quotes.js       每日一言
+    │   ├── theme.js        三态主题
+    │   ├── holidayTheme.js 节日自动主题
+    │   └── share.js        复制状态到剪贴板
         └── main.js             入口编排层
 ```
 
@@ -94,6 +96,13 @@ npx serve .
 **JS 只翻转开关，不碰任何颜色值** —— 配色全部由 `tokens.css` 的 CSS 变量承担，
 新增主题只需加一段变量覆盖，无需改动任何 JS。
 
+### `modules/holidayTheme.js` — 节日自动主题
+按北京时间（`+08:00`）判定当前日期，命中节日时给 `<html>` 加上 `data-festival`。
+CSS 中 `:root[data-festival="<id>"]` 会强制覆盖当天的浅色/深色主题，节日结束后自动移除。
+节日数据在 `assets/js/data/festivals.js` 维护：公历固定节日用 `solar()` 展开，
+农历节日按逐年核实的公历日期表录入。预览任意主题：
+`http://127.0.0.1:8000/?festival=spring-festival`。
+
 ### 背景层 `.backdrop` — 纯 CSS 柔光
 玻璃拟态的前提是"背后有东西可以透"。背景由 `base.css` 里的三个 `.blob` 径向渐变光斑构成，
 缓慢漂移（`34–42s`），为毛玻璃提供色彩来源：
@@ -112,7 +121,7 @@ npx serve .
 | 外部依赖 | Font Awesome CDN（约 100KB，仅用 3 个图标） | 内联 SVG 精灵，零外部请求 |
 | 时间基准 | 硬编码常量，未锁时区 | 统一配置 + 锁定 `+08:00` |
 | 一言 | 单一接口，失败即固定文案 | 三级降级 + 日缓存 + 多源择优 |
-| 主题 | 仅跟随系统，无法手动切换 | 三态切换并持久化 |
+| 主题 | 仅跟随系统，无法手动切换 | 三态切换并持久化 + 节日自动强制主题 |
 | 心跳 | rAF 常驻，页面隐藏仍在跑 | 隐藏挂起、可见补偿、边界对齐 |
 | 无障碍 | 无 aria / 无键盘焦点 | 语义标签 + aria + 焦点可见 + 减少动效 |
 | 倒计时结束 | 全部归零，无后续状态 | 切换为"已抵达"横幅与强调色态 |
@@ -140,3 +149,12 @@ timeline: {
 
 **调玻璃质感** → `tokens.css` 里三个变量：`--glass` / `--glass-2` 是玻璃层不透明度，
 `--blur` 是模糊强度；光斑颜色改 `--blob-1/2/3`，浓淡改 `--blob-opacity`。
+
+**开关节日自动主题** → `config.js` 里 `festival.enabled`。
+
+**加/改节日** → 改 `assets/js/data/festivals.js`：
+- 公历固定节日：给 `solar('MM-DD')` 加一行；
+- 农历节日：在 `dates` 数组里补上下一年的公历日期，并到 `tokens.css` 加一段
+  `:root[data-festival="<id>"] { ... }` 色板。
+
+**节日主题预览** → 在 URL 后加 `?festival=<id>`，例如 `?festival=mid-autumn`。

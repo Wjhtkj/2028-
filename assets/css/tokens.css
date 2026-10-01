@@ -131,3 +131,186 @@
     --divider: rgba(255, 255, 255, 0.09);
   }
 }
+
+/* =============================================================
+   节日主题 — 强制覆盖（命中节日当日取代用户的浅/深选择，次晨恢复）
+   机制：JS 仅在 <html> 上写 data-festival，配色全部由 CSS 变量承担。
+   用 :root[data-festival=...]（特异性 0,2,0）确保能压过上面的
+   "跟随系统深色"媒体查询（同为 0,2,0，且本段靠后）。
+   节日色板按玻璃拟态语言重绘：只换色相与柔光斑，玻璃质感不变。
+   ============================================================= */
+
+/* 共享：浅色节日玻璃基底（仅换玻璃质感，色相由各节日覆盖） */
+:root[data-festival] {
+  color-scheme: light;
+
+  --glass:       rgba(255, 255, 255, 0.60);
+  --glass-2:     rgba(255, 255, 255, 0.46);
+  --glass-3:     rgba(255, 255, 255, 0.72);
+  --glass-border:      rgba(255, 255, 255, 0.80);
+  --glass-border-soft: rgba(255, 255, 255, 0.50);
+  --glass-highlight:   rgba(255, 255, 255, 0.94);
+  --blur: 26px;
+
+  --text-1: #20242e;
+  --text-2: #59647a;
+  --text-3: #8c97a8;
+
+  --shadow-card: 0 24px 60px -30px rgba(40, 30, 50, 0.30);
+  --shadow-soft: 0 8px 22px -16px rgba(40, 30, 50, 0.28);
+
+  --divider: rgba(32, 36, 46, 0.08);
+  --blob-opacity: 0.72;
+}
+
+/* 共享：深色节日玻璃基底（中秋月夜 / 圣诞雪夜）只负责玻璃与文字，色相由各节日覆盖 */
+:root[data-festival="mid-autumn"],
+:root[data-festival="christmas"] {
+  color-scheme: dark;
+
+  --glass:       rgba(255, 255, 255, 0.08);
+  --glass-2:     rgba(255, 255, 255, 0.06);
+  --glass-3:     rgba(255, 255, 255, 0.12);
+  --glass-border:      rgba(255, 255, 255, 0.18);
+  --glass-border-soft: rgba(255, 255, 255, 0.10);
+  --glass-highlight:   rgba(255, 255, 255, 0.16);
+  --blur: 22px;
+
+  --text-1: #f1f3f9;
+  --text-2: #a7b2c4;
+  --text-3: #707d90;
+
+  --shadow-card: 0 24px 60px -30px rgba(0, 0, 0, 0.7);
+  --shadow-soft: 0 8px 22px -16px rgba(0, 0, 0, 0.6);
+
+  --divider: rgba(255, 255, 255, 0.10);
+  --blob-opacity: 0.60;
+}
+
+/* —— 各节日色相（背景基底 + 柔光斑 + 强调色）—— */
+
+/* 元旦：冰蓝新年 */
+:root[data-festival="new-year"] {
+  --bg-base: #eef3f8;
+  --blob-1: #a9d6ff; --blob-2: #c9b6ff; --blob-3: #bfe0ff;
+  --accent: #3a86ff; --accent-2: #8338ec; --accent-soft: rgba(58, 134, 255, 0.12);
+}
+
+/* 情人节：粉红 */
+:root[data-festival="valentine"] {
+  --bg-base: #fdeef2;
+  --blob-1: #ffafcc; --blob-2: #ffc8dd; --blob-3: #ffd6e0;
+  --accent: #ff5d8f; --accent-2: #c9184a; --accent-soft: rgba(255, 93, 143, 0.12);
+}
+
+/* 妇女节：柔粉紫 */
+:root[data-festival="women-day"] {
+  --bg-base: #fdeef5;
+  --blob-1: #ffafcc; --blob-2: #e0aaff; --blob-3: #ffd6e8;
+  --accent: #e75480; --accent-2: #c77dff; --accent-soft: rgba(231, 84, 128, 0.12);
+}
+
+/* 劳动节：红 */
+:root[data-festival="labor-day"] {
+  --bg-base: #fbeeee;
+  --blob-1: #ff8a8a; --blob-2: #ffd1a8; --blob-3: #ffb3b3;
+  --accent: #d62828; --accent-2: #f77f00; --accent-soft: rgba(214, 40, 40, 0.12);
+}
+
+/* 青年节：青蓝 */
+:root[data-festival="youth-day"] {
+  --bg-base: #eaf3f7;
+  --blob-1: #90e0ef; --blob-2: #a0c4ff; --blob-3: #caf0f8;
+  --accent: #0096c7; --accent-2: #48cae4; --accent-soft: rgba(0, 150, 199, 0.12);
+}
+
+/* 儿童节：活泼多彩 */
+:root[data-festival="children-day"] {
+  --bg-base: #f3f0fb;
+  --blob-1: #ffd6a5; --blob-2: #a0c4ff; --blob-3: #ffadad;
+  --accent: #ff70a6; --accent-2: #70d6ff; --accent-soft: rgba(255, 112, 166, 0.12);
+}
+
+/* 建军节：橄榄 + 红 */
+:root[data-festival="army-day"] {
+  --bg-base: #eef2ea;
+  --blob-1: #a3b18a; --blob-2: #dde5b6; --blob-3: #c9d6a8;
+  --accent: #588157; --accent-2: #c1121f; --accent-soft: rgba(88, 129, 87, 0.12);
+}
+
+/* 教师节：温雅蓝紫 */
+:root[data-festival="teachers-day"] {
+  --bg-base: #eef0f7;
+  --blob-1: #b8c0ff; --blob-2: #cdb4db; --blob-3: #a9def9;
+  --accent: #5e60ce; --accent-2: #7400b8; --accent-soft: rgba(94, 96, 206, 0.12);
+}
+
+/* 国庆节：红金 */
+:root[data-festival="national-day"] {
+  --bg-base: #fbecec;
+  --blob-1: #ff595e; --blob-2: #ffca3a; --blob-3: #ff8c8c;
+  --accent: #d00000; --accent-2: #ffba08; --accent-soft: rgba(208, 0, 0, 0.12);
+}
+
+/* 圣诞节：红绿雪夜（深色） */
+:root[data-festival="christmas"] {
+  --bg-base: #0c1a14;
+  --blob-1: #1b4332; --blob-2: #2d6a4f; --blob-3: #40916c;
+  --accent: #e63946; --accent-2: #95d5b2; --accent-soft: rgba(230, 57, 70, 0.16);
+}
+
+/* 春节：红金 */
+:root[data-festival="spring-festival"] {
+  --bg-base: #fbf0ec;
+  --blob-1: #ff6b6b; --blob-2: #ffd166; --blob-3: #ff9e8a;
+  --accent: #e5383b; --accent-2: #f4a261; --accent-soft: rgba(229, 56, 59, 0.12);
+}
+
+/* 元宵：暖红紫 */
+:root[data-festival="lantern"] {
+  --bg-base: #f7eef7;
+  --blob-1: #ff8fab; --blob-2: #c8a2ff; --blob-3: #ffd6a5;
+  --accent: #d6336c; --accent-2: #9b5de5; --accent-soft: rgba(214, 51, 108, 0.12);
+}
+
+/* 清明：清雅绿 */
+:root[data-festival="qingming"] {
+  --bg-base: #eef5ee;
+  --blob-1: #a8d5ba; --blob-2: #c7e9c0; --blob-3: #bfe3d0;
+  --accent: #2a9d8f; --accent-2: #57cc99; --accent-soft: rgba(42, 157, 143, 0.12);
+}
+
+/* 端午：艾草青 */
+:root[data-festival="dragon-boat"] {
+  --bg-base: #eaf3ef;
+  --blob-1: #6fb3a0; --blob-2: #8fd3c4; --blob-3: #cfe8df;
+  --accent: #1b8a72; --accent-2: #43aa8b; --accent-soft: rgba(27, 138, 114, 0.12);
+}
+
+/* 七夕：浪漫紫粉 */
+:root[data-festival="qixi"] {
+  --bg-base: #f3ecf7;
+  --blob-1: #c8a2ff; --blob-2: #ffafcc; --blob-3: #bdb2ff;
+  --accent: #9b5de5; --accent-2: #f15bb5; --accent-soft: rgba(155, 93, 229, 0.12);
+}
+
+/* 中秋：月夜（深色） */
+:root[data-festival="mid-autumn"] {
+  --bg-base: #0e1630;
+  --blob-1: #3a4a8c; --blob-2: #6b5b95; --blob-3: #2a3a6a;
+  --accent: #ffd166; --accent-2: #ffb4a2; --accent-soft: rgba(255, 209, 102, 0.16);
+}
+
+/* 重阳：菊橙 */
+:root[data-festival="double-ninth"] {
+  --bg-base: #fbf2e6;
+  --blob-1: #ffd6a5; --blob-2: #ffb085; --blob-3: #fcd5a5;
+  --accent: #e07a3f; --accent-2: #f4a261; --accent-soft: rgba(224, 122, 63, 0.12);
+}
+
+/* 除夕：深红暖 */
+:root[data-festival="new-year-eve"] {
+  --bg-base: #f8e9e6;
+  --blob-1: #ff5c5c; --blob-2: #ffcaa8; --blob-3: #e8a0a0;
+  --accent: #c1121f; --accent-2: #f4a261; --accent-soft: rgba(193, 18, 31, 0.12);
+}

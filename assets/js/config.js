@@ -64,4 +64,9 @@ export const CONFIG = {
     storageKey: 'gaokao2028:theme',
     order: ['system', 'light', 'dark'],
   },
+
+  /** 节日自动主题：命中节日时强制覆盖当日浅/深主题，次晨（北京时间）恢复 */
+  festival: {
+    enabled: true,
+  },
 };
