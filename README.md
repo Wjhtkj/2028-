@@ -53,6 +53,7 @@ npx serve .
     ├── modules/            业务模块（各自独立、可单独替换）
     │   ├── countdown.js    倒计时显示
     │   ├── progress.js     高中进度条
+    │   ├── milestones.js   关键节点（进度刻度 + 倒计时 chips）
     │   ├── quotes.js       每日一言
     │   ├── theme.js        三态主题
     │   ├── holidayTheme.js 节日自动主题
@@ -84,6 +85,11 @@ npx serve .
 进度值来自 `time.js`，这里只负责呈现：填充条与端点光点共用同一百分比，
 同步维护 `role="progressbar"` 的 aria 值供读屏器读取。
 
+### `modules/milestones.js` — 关键节点
+里程碑不写死日期，全部由 `start/target` 推导（半程点按比例、百日誓师/考前一周按开考前 N 天）。
+做两件事：往进度条上画静态刻度点，往面板渲染「距节点还有 N 天」的 chips，
+逐 chip 脏检查，只在跨天时写 DOM。节点清单在 `config.js` 的 `milestones` 配置。
+
 ### `modules/quotes.js` — 三级降级
 `本地日缓存 → 远程多数据源 → 本地句库`，任一环节失败都不会白屏：
 - "每日"用 `dayKey()` 判定，同一天刷新不再重复请求；
@@ -103,12 +109,24 @@ CSS 中 `:root[data-festival="<id>"]` 会强制覆盖当天的浅色/深色主�
 农历节日按逐年核实的公历日期表录入。预览任意主题：
 `http://127.0.0.1:8000/?festival=spring-festival`。
 
-### 背景层 `.backdrop` — 纯 CSS 柔光
-玻璃拟态的前提是"背后有东西可以透"。背景由 `base.css` 里的三个 `.blob` 径向渐变光斑构成，
-缓慢漂移（`34–42s`），为毛玻璃提供色彩来源：
+### 背景层 `.backdrop` — 纯 CSS 柔光 + 极光
+液态玻璃的前提是"背后有东西可以透"。背景由一层 `.aurora` 定向渐变色带 +
+三个 `.blob` 径向渐变光斑构成，缓慢漂移，为玻璃提供色彩来源：
 - 用径向渐变而非 `filter: blur()` 实现柔边 —— 视觉等价，但几乎不耗 GPU；
 - 没有 JS 参与，禁用脚本时背景依然完整；
-- 系统开启"减少动态效果"时光斑静止。
+- 系统开启"减少动态效果"时全部静止。
+
+### 液态玻璃面板 `.panel` — 两条低成本签名
+页面由多个悬浮 `.panel`（英雄倒计时 / 征程 / 一言）组成，液态感来自两个纯 CSS 技法：
+- **发光描边**：`::before` 用渐变背景 + `mask` 镂空出 1.5px 亮边（受光侧亮、背光侧弱）；
+- **镜面扫光**：`::after` 一条柔亮带周期性掠过面板表面（9s 一次，reduced-motion 下静止）。
+配色仍全部来自 `tokens.css` 的变量，新增主题/节日只需补变量，JS 不碰颜色。
+
+### UI 结构
+- **英雄面板**：超大「天」数为主视觉，时/分/秒收为下方小字条（CSS Grid 重排，倒计时 JS 未动）；
+- **征程面板**：进度条（含节点刻度）+ 三项指标 + 关键节点 chips；
+- **一言面板**：每日一言 + 刷新；
+- **主题切换**：右上角独立悬浮液态钮，不占版面。
 
 ---
 
@@ -140,17 +158,23 @@ timeline: {
 }
 ```
 
-**改配色** → `assets/css/tokens.css`。默认 `:root` 是浅色玻璃，`[data-theme="dark"]`
-是深色玻璃，改这两组变量即可，全站自动生效，JS 无需改动。
+**改配色** → `assets/css/tokens.css`。默认 `:root` 是浅色液态玻璃，`[data-theme="dark"]`
+是深色液态玻璃，改这两组变量即可，全站自动生效，JS 无需改动。
 
 **加一句本地箴言** → `assets/js/data/quotes.js` 的 `LOCAL_QUOTES` 数组。
 
 **关掉跑题词护栏** → `config.js` 里把 `quote.blockKeywords` 置为 `[]`。
 
-**调玻璃质感** → `tokens.css` 里三个变量：`--glass` / `--glass-2` 是玻璃层不透明度，
-`--blur` 是模糊强度；光斑颜色改 `--blob-1/2/3`，浓淡改 `--blob-opacity`。
+**调玻璃质感** → `tokens.css`：`--glass` / `--glass-2` / `--glass-3` 是玻璃层不透明度，
+`--blur` 是模糊强度；光斑颜色改 `--blob-1/2/3`，浓淡改 `--blob-opacity`；
+液态描边改 `--edge-1/2`，扫光改 `--sheen` / `--sheen-opacity`。
+
+**改关键节点** → `config.js` 的 `milestones` 数组（按比例 `ratio` 或开考前 `beforeTargetDays`）。
 
 **开关节日自动主题** → `config.js` 里 `festival.enabled`。
+
+**预览主题 / 节日** → URL 后加 `?theme=light|dark|system` 或 `?festival=<id>`，
+例如 `?theme=dark`、`?festival=mid-autumn`（仅预览，不写入偏好）。
 
 **加/改节日** → 改 `assets/js/data/festivals.js`：
 - 公历固定节日：给 `solar('MM-DD')` 加一行；

@@ -22,9 +22,18 @@ const LABELS = {
   dark:   '深色模式',
 };
 
+/** 从 URL 读取预览用的主题（仅预览/调试，不写入持久化，不影响正常判定） */
+function previewTheme(order) {
+  try {
+    const t = new URLSearchParams(location.search).get('theme');
+    if (t && order.includes(t)) return t;
+  } catch { /* 无 location（非浏览器）时忽略 */ }
+  return null;
+}
+
 export function createTheme({ storageKey, order }) {
   const root = document.documentElement;
-  let current = store.get(storageKey, 'system');
+  let current = previewTheme(order) || store.get(storageKey, 'system');
   if (!order.includes(current)) current = 'system';
 
   function apply() {

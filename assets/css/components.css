@@ -1,12 +1,12 @@
 /* =============================================================
-   components.css — 各功能模块的组件样式（玻璃拟态 · 极简）
+   components.css — 各功能模块的组件样式（液态玻璃）
    ============================================================= */
 
-/* ---------- 1. 头部：标题 + 主题切换 ---------- */
+/* ---------- 1. 英雄区：标题 ---------- */
 
 .eyebrow {
-  font-size: 0.68rem;
-  letter-spacing: 0.26em;
+  font-size: 0.66rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--text-3);
   margin-bottom: var(--sp-2);
@@ -14,86 +14,120 @@
 }
 
 .title {
-  font-size: clamp(1.9rem, 5.4vw, 2.5rem);
-  font-weight: 350;
-  letter-spacing: -0.025em;
+  font-size: clamp(1.75rem, 5vw, 2.3rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
   color: var(--text-1);
   line-height: 1.15;
 }
 
 .subtitle {
   margin-top: var(--sp-2);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 350;
   color: var(--text-2);
 }
 .subtitle b { color: var(--text-1); font-weight: 500; }
 
-.icon-btn {
-  flex: none;
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  border-radius: var(--r-pill);
-  border: 1px solid var(--glass-border-soft);
-  background: var(--glass-2);
-  color: var(--text-2);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: color var(--dur-fast), background var(--dur-fast), transform var(--dur-fast);
-}
-.icon-btn:hover { color: var(--accent); background: var(--glass-3); }
-.icon-btn:active { transform: scale(0.94); }
-.icon-btn svg { width: 17px; height: 17px; display: block; }
-
-/* ---------- 2. 倒计时 ---------- */
+/* ---------- 2. 倒计时：天为主视觉，时/分/秒收为字条 ---------- */
 
 .countdown {
+  margin-top: var(--sp-5);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-areas:
+    "days days days"
+    "hours minutes seconds";
   gap: var(--sp-3);
 }
+.unit[data-unit="days"]    { grid-area: days; }
+.unit[data-unit="hours"]   { grid-area: hours; }
+.unit[data-unit="minutes"] { grid-area: minutes; }
+.unit[data-unit="seconds"] { grid-area: seconds; }
 
-.unit {
-  padding: 22px 8px 16px;
-  text-align: center;
+.unit { text-align: center; }
+
+/* 主视觉：天数（无框大数字） */
+.unit[data-unit="days"] { padding: var(--sp-2) 0 var(--sp-1); }
+.unit[data-unit="days"] .unit__value {
+  display: block;
+  font-size: clamp(4.6rem, 21vw, 8.2rem);
+  font-weight: 200;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+  color: var(--text-1);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.unit[data-unit="days"] .unit__label {
+  display: block;
+  margin-top: var(--sp-2);
+  font-size: 0.78rem;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: var(--text-3);
+}
+
+/* 时/分/秒：液态小字条 */
+.unit[data-unit="hours"],
+.unit[data-unit="minutes"],
+.unit[data-unit="seconds"] {
+  padding: var(--sp-3) var(--sp-2) calc(var(--sp-3) - 2px);
   border-radius: var(--r-md);
   background: var(--glass-2);
   border: 1px solid var(--glass-border-soft);
-  box-shadow: inset 0 1px 0 var(--glass-highlight);
-  backdrop-filter: blur(10px) saturate(150%);
-  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  box-shadow: var(--shadow-inset);
+  backdrop-filter: blur(8px) saturate(150%);
+  -webkit-backdrop-filter: blur(8px) saturate(150%);
 }
-
-.unit__value {
+.unit[data-unit="hours"] .unit__value,
+.unit[data-unit="minutes"] .unit__value,
+.unit[data-unit="seconds"] .unit__value {
   display: block;
-  font-size: clamp(2.1rem, 7vw, 3.3rem);
+  font-size: clamp(1.5rem, 6vw, 2.05rem);
   font-weight: 300;
   line-height: 1.05;
   letter-spacing: -0.02em;
   color: var(--text-1);
   transition: color var(--dur-fast) var(--ease-out);
 }
-
-.unit__label {
+.unit[data-unit="hours"] .unit__label,
+.unit[data-unit="minutes"] .unit__label,
+.unit[data-unit="seconds"] .unit__label {
   display: block;
-  margin-top: var(--sp-2);
+  margin-top: 3px;
   font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
   color: var(--text-3);
-  font-weight: 400;
 }
 
-/* 跳变时只做一次极轻的色相偏移，不做位移缩放 */
+/* 跳变时只做一次极轻的色相偏移 */
 .unit.is-ticking .unit__value { color: var(--accent); }
 
 /* 抵达状态：整组转为强调色 */
 .countdown.is-reached .unit__value { color: var(--accent); }
-.countdown.is-reached .unit { border-color: var(--glass-border); }
 
-/* ---------- 3. 进度条 ---------- */
+/* ---------- 3. 抵达横幅 ---------- */
+
+.reached {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-5);
+  padding: var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--glass-2);
+  border: 1px solid var(--glass-border);
+  color: var(--accent);
+  font-size: 0.94rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.reached.is-visible { display: flex; }
+.reached svg { width: 17px; height: 17px; flex: none; }
+
+/* ---------- 4. 进度条（含节点刻度） ---------- */
 
 .progress__head {
   display: flex;
@@ -104,17 +138,17 @@
   color: var(--text-2);
 }
 .progress__head b {
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   color: var(--accent);
   font-weight: 500;
 }
 
 .progress__track {
   position: relative;
-  height: 6px;
+  height: 8px;
   border-radius: var(--r-pill);
   background: var(--glass-3);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.07);
 }
 
 .progress__fill {
@@ -125,16 +159,29 @@
   transition: width var(--dur-slow) var(--ease-out);
 }
 
+/* 端点光点：白芯 + 强调色描边 + 细光晕 */
 .progress__marker {
   position: absolute;
   top: 50%;
   left: 0%;
-  width: 12px; height: 12px;
-  margin: -6px 0 0 -6px;
+  width: 14px; height: 14px;
+  margin: -7px 0 0 -7px;
   border-radius: var(--r-pill);
   background: #fff;
   border: 3px solid var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
   transition: left var(--dur-slow) var(--ease-out);
+}
+
+/* 关键节点刻度（由 JS 注入） */
+.track-tick {
+  position: absolute;
+  top: 50%;
+  width: 5px; height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: var(--r-pill);
+  background: var(--text-3);
+  opacity: 0.55;
 }
 
 .progress__ends {
@@ -151,7 +198,7 @@
   margin-right: var(--sp-1);
 }
 
-/* ---------- 4. 指标条目 ---------- */
+/* ---------- 5. 指标条目 ---------- */
 
 .stats {
   display: grid;
@@ -170,7 +217,7 @@
 }
 .stat__value {
   display: block;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 400;
   color: var(--text-1);
 }
@@ -181,34 +228,55 @@
   color: var(--text-3);
 }
 
-/* ---------- 5. 每日一言 ---------- */
+/* ---------- 6. 关键节点 chips ---------- */
 
-.quote {
-  position: relative;
-  padding: var(--sp-5) var(--sp-5) var(--sp-4);
-  border-radius: var(--r-md);
+.milestones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+}
+.milestones:empty { display: none; }
+
+.ms {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: var(--r-pill);
   background: var(--glass-2);
   border: 1px solid var(--glass-border-soft);
-  box-shadow: inset 0 1px 0 var(--glass-highlight);
+  font-size: 0.74rem;
+  color: var(--text-2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
+.ms b { font-weight: 500; color: var(--text-1); }
+.ms i { font-style: normal; font-weight: 500; color: var(--accent); }
+.ms.is-past i { color: var(--text-3); }
+.ms.is-today { border-color: var(--accent); }
+
+/* ---------- 7. 每日一言 ---------- */
+
+.quote { position: relative; }
 
 .quote__mark {
   position: absolute;
   top: var(--sp-2);
   left: var(--sp-4);
-  font-size: 2.4rem;
+  font-size: 2.6rem;
   line-height: 1;
-  color: var(--text-3);
-  opacity: 0.35;
+  color: var(--accent);
+  opacity: 0.28;
   pointer-events: none;
   user-select: none;
 }
 
 .quote__text {
   position: relative;
-  font-size: clamp(1rem, 3.2vw, 1.15rem);
+  font-size: clamp(1.02rem, 3.2vw, 1.18rem);
   font-weight: 350;
-  line-height: 1.75;
+  line-height: 1.8;
   color: var(--text-1);
   padding-right: var(--sp-6);
 }
@@ -235,10 +303,10 @@
   color: var(--text-2);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  transition: color var(--dur-fast), transform var(--dur-fast), background var(--dur-fast);
+  transition: color var(--dur-fast), transform var(--dur-fast) var(--ease-spring), background var(--dur-fast);
 }
 .quote__refresh:hover { color: var(--accent); }
-.quote__refresh:active { transform: scale(0.92); }
+.quote__refresh:active { transform: scale(0.88) rotate(-30deg); }
 .quote__refresh svg { width: 14px; height: 14px; }
 .quote__refresh.is-busy { opacity: 0.5; pointer-events: none; }
 .quote__refresh.is-busy svg { animation: spin 0.8s linear infinite; }
@@ -252,13 +320,13 @@
   to   { opacity: 1; transform: none; }
 }
 
-/* ---------- 6. 状态徽标 ---------- */
+/* ---------- 8. 状态徽标 ---------- */
 
 .badge {
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  padding: 6px 14px;
+  padding: 7px 15px;
   border-radius: var(--r-pill);
   border: 1px solid var(--glass-border-soft);
   background: var(--glass-2);
@@ -279,7 +347,7 @@
 
 @keyframes pulse { 50% { opacity: 0.25; } }
 
-/* ---------- 7. 页脚 ---------- */
+/* ---------- 9. 页脚 ---------- */
 
 .foot__quote {
   font-size: 0.9rem;
@@ -301,27 +369,25 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sp-2);
-  padding: 9px 18px;
+  padding: 10px 20px;
   border-radius: var(--r-pill);
-  border: 1px solid var(--glass-border-soft);
-  background: var(--glass-2);
-  color: var(--text-2);
-  font-size: 0.8rem;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: color var(--dur-fast), transform var(--dur-fast), background var(--dur-fast);
+  border: 1px solid var(--glass-border);
+  background: var(--glass-3);
+  color: var(--text-1);
+  font-size: 0.82rem;
+  box-shadow: var(--shadow-soft), var(--shadow-inset);
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  transition: color var(--dur-fast), transform var(--dur-fast) var(--ease-spring), background var(--dur-fast);
 }
-.btn:hover { color: var(--accent); background: var(--glass-3); }
-.btn:active { transform: translateY(1px); }
+.btn:hover { color: var(--accent); }
+.btn:active { transform: translateY(1px) scale(0.98); }
 .btn svg { width: 14px; height: 14px; }
 
 .foot__note {
   font-size: 0.72rem;
   color: var(--text-3);
   line-height: 1.75;
-  margin-top: var(--sp-4);
-  padding-top: var(--sp-4);
-  border-top: 1px solid var(--divider);
 }
 .foot__meta {
   margin-top: var(--sp-2);
@@ -330,31 +396,11 @@
   opacity: 0.8;
 }
 
-/* ---------- 8. 抵达横幅 ---------- */
-
-.reached {
-  display: none;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-4);
-  border-radius: var(--r-md);
-  background: var(--glass-2);
-  border: 1px solid var(--glass-border);
-  color: var(--accent);
-  font-size: 0.92rem;
-}
-.reached.is-visible { display: flex; }
-.reached svg { width: 17px; height: 17px; flex: none; }
-
-/* ---------- 9. 窄屏适配 ---------- */
+/* ---------- 10. 窄屏适配 ---------- */
 
 @media (max-width: 480px) {
   .countdown { gap: var(--sp-2); }
-  .unit { padding: 18px 6px 12px; border-radius: var(--r-sm); }
-  .unit__label { font-size: 0.54rem; letter-spacing: 0.12em; }
-  .quote { padding: var(--sp-4) var(--sp-4) var(--sp-3); }
-  .quote__text { padding-right: var(--sp-5); }
-  .quote__mark { font-size: 1.9rem; left: var(--sp-3); }
+  .unit[data-unit="days"] .unit__value { font-size: clamp(3.9rem, 24vw, 5.6rem); }
   .stats { grid-template-columns: 1fr; }
   .stat {
     display: flex;
@@ -366,7 +412,7 @@
 }
 
 @media (max-width: 360px) {
-  .countdown { gap: 6px; }
-  .unit__value { font-size: 1.7rem; }
-  .unit__label { font-size: 0.48rem; letter-spacing: 0.06em; }
+  .unit[data-unit="hours"] .unit__value,
+  .unit[data-unit="minutes"] .unit__value,
+  .unit[data-unit="seconds"] .unit__value { font-size: 1.4rem; }
 }

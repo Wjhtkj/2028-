@@ -1,46 +1,56 @@
 /* =============================================================
-   tokens.css — 设计令牌（玻璃拟态 · 极简）
-   全站唯一的"样式来源"。改配色只需改这里。
+   tokens.css — 设计令牌（液态玻璃 Liquid Glass）
+   全站唯一的"样式来源"。改配色只需改这里，JS 不碰任何颜色值。
    ============================================================= */
 
 :root {
   color-scheme: light;
 
   /* —— 背景基底与柔光斑（玻璃需要有东西可以"透"） —— */
-  --bg-base: #eef1f7;
-  --blob-1: #b9d0ff;
-  --blob-2: #d9cfff;
-  --blob-3: #ffdcc9;
-  --blob-opacity: 0.7;
+  --bg-base: #e9edf6;
+  --blob-1: #aec6ff;
+  --blob-2: #d6c6ff;
+  --blob-3: #ffd9c4;
+  --blob-opacity: 0.85;
+  --aurora: linear-gradient(120deg, #cdd9ff 0%, #e6d4ff 45%, #ffe0d2 100%);
+  --aurora-opacity: 0.5;
 
   /* —— 玻璃层：由外到内 —— */
-  --glass:       rgba(255, 255, 255, 0.55);
-  --glass-2:     rgba(255, 255, 255, 0.42);
-  --glass-3:     rgba(255, 255, 255, 0.66);
-  --glass-border:      rgba(255, 255, 255, 0.75);
-  --glass-border-soft: rgba(255, 255, 255, 0.45);
-  --glass-highlight:   rgba(255, 255, 255, 0.9);
-  --blur: 26px;
+  --glass:       rgba(255, 255, 255, 0.42);
+  --glass-2:     rgba(255, 255, 255, 0.30);
+  --glass-3:     rgba(255, 255, 255, 0.55);
+  --glass-border:      rgba(255, 255, 255, 0.65);
+  --glass-border-soft: rgba(255, 255, 255, 0.35);
+  --glass-highlight:   rgba(255, 255, 255, 0.85);
+  --blur: 30px;
+
+  /* —— 液态签名：发光描边 + 镜面扫光 —— */
+  --edge-1: rgba(255, 255, 255, 0.95);   /* 受光侧（左上）亮边 */
+  --edge-2: rgba(255, 255, 255, 0.40);   /* 背光侧（右下）亮边 */
+  --sheen:  rgba(255, 255, 255, 0.50);   /* 扫光 */
+  --sheen-opacity: 0.5;
 
   /* —— 文本层级 —— */
-  --text-1: #1b2432;
-  --text-2: #566579;
-  --text-3: #8a97a9;
+  --text-1: #171f2d;
+  --text-2: #4d5c74;
+  --text-3: #8593a6;
 
   /* —— 强调色：单一色系，克制使用 —— */
-  --accent:      #4f74ff;
-  --accent-2:    #8a6bff;
-  --accent-soft: rgba(79, 116, 255, 0.12);
+  --accent:      #3f6bff;
+  --accent-2:    #8a5cff;
+  --accent-soft: rgba(63, 107, 255, 0.14);
 
-  /* —— 阴影：极软，不用重投影 —— */
-  --shadow-card: 0 24px 60px -30px rgba(31, 45, 74, 0.30);
-  --shadow-soft: 0 8px 22px -16px rgba(31, 45, 74, 0.28);
+  /* —— 阴影：悬浮感，但不用重投影 —— */
+  --shadow-card: 0 30px 70px -32px rgba(28, 40, 68, 0.35);
+  --shadow-soft: 0 10px 26px -18px rgba(28, 40, 68, 0.30);
+  --shadow-inset: inset 0 1px 0 var(--glass-highlight);
 
   /* —— 分隔线 —— */
-  --divider: rgba(27, 36, 50, 0.08);
+  --divider: rgba(23, 31, 45, 0.08);
 
-  /* —— 圆角：玻璃爱大圆角 —— */
-  --r-lg: 32px;
+  /* —— 圆角：液态玻璃爱大圆角 —— */
+  --r-xl: 36px;
+  --r-lg: 28px;
   --r-md: 20px;
   --r-sm: 14px;
   --r-pill: 999px;
@@ -61,39 +71,48 @@
 
   /* —— 动效 —— */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --dur-fast: 140ms;
-  --dur-mid:  320ms;
-  --dur-slow: 620ms;
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.5, 1);
+  --dur-fast: 160ms;
+  --dur-mid:  340ms;
+  --dur-slow: 680ms;
 }
 
-/* ===== 深色：玻璃转为"深色毛玻璃"，光斑压暗压灰 ===== */
+/* ===== 深色：液态深色玻璃，光斑压暗、描边转冷 ===== */
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --bg-base: #0d1017;
-  --blob-1: #2b3f78;
-  --blob-2: #3a2c66;
-  --blob-3: #1c4450;
-  --blob-opacity: 0.55;
+  --bg-base: #0a0d16;
+  --blob-1: #25409c;
+  --blob-2: #4a2f8e;
+  --blob-3: #173f52;
+  --blob-opacity: 0.6;
+  --aurora: linear-gradient(120deg, #14204a 0%, #2a1650 50%, #0c2c3c 100%);
+  --aurora-opacity: 0.55;
 
-  --glass:       rgba(255, 255, 255, 0.07);
-  --glass-2:     rgba(255, 255, 255, 0.05);
-  --glass-3:     rgba(255, 255, 255, 0.11);
-  --glass-border:      rgba(255, 255, 255, 0.16);
-  --glass-border-soft: rgba(255, 255, 255, 0.09);
+  --glass:       rgba(255, 255, 255, 0.06);
+  --glass-2:     rgba(255, 255, 255, 0.045);
+  --glass-3:     rgba(255, 255, 255, 0.10);
+  --glass-border:      rgba(255, 255, 255, 0.15);
+  --glass-border-soft: rgba(255, 255, 255, 0.08);
   --glass-highlight:   rgba(255, 255, 255, 0.14);
-  --blur: 22px;
+  --blur: 26px;
 
-  --text-1: #eef2f8;
-  --text-2: #a3b0c2;
-  --text-3: #6f7d90;
+  --edge-1: rgba(255, 255, 255, 0.30);
+  --edge-2: rgba(255, 255, 255, 0.07);
+  --sheen:  rgba(255, 255, 255, 0.10);
+  --sheen-opacity: 0.35;
+
+  --text-1: #eef2f9;
+  --text-2: #a5b1c4;
+  --text-3: #6e7c91;
 
   --accent:      #86a8ff;
   --accent-2:    #b79bff;
   --accent-soft: rgba(134, 168, 255, 0.16);
 
-  --shadow-card: 0 24px 60px -30px rgba(0, 0, 0, 0.7);
-  --shadow-soft: 0 8px 22px -16px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 30px 70px -32px rgba(0, 0, 0, 0.75);
+  --shadow-soft: 0 10px 26px -18px rgba(0, 0, 0, 0.6);
+  --shadow-inset: inset 0 1px 0 var(--glass-highlight);
 
   --divider: rgba(255, 255, 255, 0.09);
 }
@@ -103,30 +122,38 @@
   :root:not([data-theme="light"]) {
     color-scheme: dark;
 
-    --bg-base: #0d1017;
-    --blob-1: #2b3f78;
-    --blob-2: #3a2c66;
-    --blob-3: #1c4450;
-    --blob-opacity: 0.55;
+    --bg-base: #0a0d16;
+    --blob-1: #25409c;
+    --blob-2: #4a2f8e;
+    --blob-3: #173f52;
+    --blob-opacity: 0.6;
+    --aurora: linear-gradient(120deg, #14204a 0%, #2a1650 50%, #0c2c3c 100%);
+    --aurora-opacity: 0.55;
 
-    --glass:       rgba(255, 255, 255, 0.07);
-    --glass-2:     rgba(255, 255, 255, 0.05);
-    --glass-3:     rgba(255, 255, 255, 0.11);
-    --glass-border:      rgba(255, 255, 255, 0.16);
-    --glass-border-soft: rgba(255, 255, 255, 0.09);
+    --glass:       rgba(255, 255, 255, 0.06);
+    --glass-2:     rgba(255, 255, 255, 0.045);
+    --glass-3:     rgba(255, 255, 255, 0.10);
+    --glass-border:      rgba(255, 255, 255, 0.15);
+    --glass-border-soft: rgba(255, 255, 255, 0.08);
     --glass-highlight:   rgba(255, 255, 255, 0.14);
-    --blur: 22px;
+    --blur: 26px;
 
-    --text-1: #eef2f8;
-    --text-2: #a3b0c2;
-    --text-3: #6f7d90;
+    --edge-1: rgba(255, 255, 255, 0.30);
+    --edge-2: rgba(255, 255, 255, 0.07);
+    --sheen:  rgba(255, 255, 255, 0.10);
+    --sheen-opacity: 0.35;
+
+    --text-1: #eef2f9;
+    --text-2: #a5b1c4;
+    --text-3: #6e7c91;
 
     --accent:      #86a8ff;
     --accent-2:    #b79bff;
     --accent-soft: rgba(134, 168, 255, 0.16);
 
-    --shadow-card: 0 24px 60px -30px rgba(0, 0, 0, 0.7);
-    --shadow-soft: 0 8px 22px -16px rgba(0, 0, 0, 0.6);
+    --shadow-card: 0 30px 70px -32px rgba(0, 0, 0, 0.75);
+    --shadow-soft: 0 10px 26px -18px rgba(0, 0, 0, 0.6);
+    --shadow-inset: inset 0 1px 0 var(--glass-highlight);
 
     --divider: rgba(255, 255, 255, 0.09);
   }
@@ -137,30 +164,35 @@
    机制：JS 仅在 <html> 上写 data-festival，配色全部由 CSS 变量承担。
    用 :root[data-festival=...]（特异性 0,2,0）确保能压过上面的
    "跟随系统深色"媒体查询（同为 0,2,0，且本段靠后）。
-   节日色板按玻璃拟态语言重绘：只换色相与柔光斑，玻璃质感不变。
+   节日色板按液态玻璃语言重绘：只换色相与柔光斑，玻璃质感不变。
    ============================================================= */
 
 /* 共享：浅色节日玻璃基底（仅换玻璃质感，色相由各节日覆盖） */
 :root[data-festival] {
   color-scheme: light;
 
-  --glass:       rgba(255, 255, 255, 0.60);
-  --glass-2:     rgba(255, 255, 255, 0.46);
-  --glass-3:     rgba(255, 255, 255, 0.72);
-  --glass-border:      rgba(255, 255, 255, 0.80);
-  --glass-border-soft: rgba(255, 255, 255, 0.50);
-  --glass-highlight:   rgba(255, 255, 255, 0.94);
-  --blur: 26px;
+  --glass:       rgba(255, 255, 255, 0.46);
+  --glass-2:     rgba(255, 255, 255, 0.33);
+  --glass-3:     rgba(255, 255, 255, 0.60);
+  --glass-border:      rgba(255, 255, 255, 0.70);
+  --glass-border-soft: rgba(255, 255, 255, 0.40);
+  --glass-highlight:   rgba(255, 255, 255, 0.90);
+  --blur: 30px;
 
-  --text-1: #20242e;
-  --text-2: #59647a;
-  --text-3: #8c97a8;
+  --edge-1: rgba(255, 255, 255, 0.95);
+  --edge-2: rgba(255, 255, 255, 0.42);
+  --sheen:  rgba(255, 255, 255, 0.55);
+  --sheen-opacity: 0.55;
 
-  --shadow-card: 0 24px 60px -30px rgba(40, 30, 50, 0.30);
-  --shadow-soft: 0 8px 22px -16px rgba(40, 30, 50, 0.28);
+  --text-1: #1d2431;
+  --text-2: #535f75;
+  --text-3: #8792a4;
 
-  --divider: rgba(32, 36, 46, 0.08);
-  --blob-opacity: 0.72;
+  --shadow-card: 0 30px 70px -32px rgba(40, 30, 50, 0.35);
+  --shadow-soft: 0 10px 26px -18px rgba(40, 30, 50, 0.30);
+
+  --divider: rgba(29, 36, 49, 0.08);
+  --blob-opacity: 0.85;
 }
 
 /* 共享：深色节日玻璃基底（中秋月夜 / 圣诞雪夜）只负责玻璃与文字，色相由各节日覆盖 */
@@ -168,30 +200,35 @@
 :root[data-festival="christmas"] {
   color-scheme: dark;
 
-  --glass:       rgba(255, 255, 255, 0.08);
-  --glass-2:     rgba(255, 255, 255, 0.06);
-  --glass-3:     rgba(255, 255, 255, 0.12);
-  --glass-border:      rgba(255, 255, 255, 0.18);
-  --glass-border-soft: rgba(255, 255, 255, 0.10);
-  --glass-highlight:   rgba(255, 255, 255, 0.16);
-  --blur: 22px;
+  --glass:       rgba(255, 255, 255, 0.07);
+  --glass-2:     rgba(255, 255, 255, 0.05);
+  --glass-3:     rgba(255, 255, 255, 0.11);
+  --glass-border:      rgba(255, 255, 255, 0.16);
+  --glass-border-soft: rgba(255, 255, 255, 0.09);
+  --glass-highlight:   rgba(255, 255, 255, 0.15);
+  --blur: 26px;
+
+  --edge-1: rgba(255, 255, 255, 0.30);
+  --edge-2: rgba(255, 255, 255, 0.07);
+  --sheen:  rgba(255, 255, 255, 0.10);
+  --sheen-opacity: 0.35;
 
   --text-1: #f1f3f9;
   --text-2: #a7b2c4;
   --text-3: #707d90;
 
-  --shadow-card: 0 24px 60px -30px rgba(0, 0, 0, 0.7);
-  --shadow-soft: 0 8px 22px -16px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 30px 70px -32px rgba(0, 0, 0, 0.75);
+  --shadow-soft: 0 10px 26px -18px rgba(0, 0, 0, 0.6);
 
   --divider: rgba(255, 255, 255, 0.10);
-  --blob-opacity: 0.60;
+  --blob-opacity: 0.65;
 }
 
 /* —— 各节日色相（背景基底 + 柔光斑 + 强调色）—— */
 
 /* 元旦：冰蓝新年 */
 :root[data-festival="new-year"] {
-  --bg-base: #eef3f8;
+  --bg-base: #eaf1fa;
   --blob-1: #a9d6ff; --blob-2: #c9b6ff; --blob-3: #bfe0ff;
   --accent: #3a86ff; --accent-2: #8338ec; --accent-soft: rgba(58, 134, 255, 0.12);
 }

@@ -69,4 +69,16 @@ export const CONFIG = {
   festival: {
     enabled: true,
   },
+
+  /**
+   * 关键节点：可推导的确定性里程碑（用于进度条刻度与倒计时 chips）
+   * ratio            距启程的进度比例（0~1）
+   * beforeTargetDays 开考前 N 天
+   * afterStartDays   启程后 N 天
+   */
+  milestones: [
+    { name: '半程点',   ratio: 0.5 },
+    { name: '百日誓师', beforeTargetDays: 100 },
+    { name: '考前一周', beforeTargetDays: 7 },
+  ],
 };

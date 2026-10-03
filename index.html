@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="2028 年高考倒计时 · 高中进度追踪 · 每日一言">
-  <meta name="theme-color" content="#0d1017" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#eef1f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0a0d16" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#e9edf6" media="(prefers-color-scheme: light)">
   <meta property="og:title" content="2028 高考倒计时">
   <meta property="og:description" content="向着月亮出发，即使不能到达，也能站在群星之中。">
 
@@ -21,8 +21,9 @@
 </head>
 <body>
 
-  <!-- 柔光背景：玻璃需要有东西可以透。纯 CSS，无 JS 也能显示 -->
+  <!-- 液态玻璃背景：柔光斑 + 极光层。纯 CSS，无 JS 也能显示 -->
   <div class="backdrop" aria-hidden="true">
+    <span class="aurora"></span>
     <span class="blob blob--1"></span>
     <span class="blob blob--2"></span>
     <span class="blob blob--3"></span>
@@ -52,126 +53,120 @@
     </symbol>
   </svg>
 
+  <!-- 悬浮主题切换：独立液态玻璃钮 -->
+  <button class="theme-fab" id="themeToggle" type="button"
+          aria-label="切换主题" title="切换主题">
+    <svg aria-hidden="true"><use id="themeIcon" href="#i-auto"></use></svg>
+  </button>
+
   <main class="stage">
-    <article class="card">
 
-      <!-- ========== 头部：标题 + 主题切换 ========== -->
-      <header class="card__head">
-        <div class="head__text">
-          <p class="eyebrow">Countdown</p>
-          <h1 class="title" id="examName">2028 高考</h1>
-          <p class="subtitle">
-            <b id="examDate">2028.06.07</b> · <span id="examWeekday">星期三</span>
-            <span id="examClock"></span>
-          </p>
+    <!-- ========== 英雄面板：倒计时 ========== -->
+    <section class="panel hero" aria-labelledby="examName">
+      <p class="eyebrow">Countdown</p>
+      <h1 class="title" id="examName">2028 高考</h1>
+      <p class="subtitle">
+        <b id="examDate">2028.06.07</b> · <span id="examWeekday">星期三</span><span id="examClock"></span>
+      </p>
+
+      <div class="countdown" id="countdown" role="timer" aria-live="off">
+        <div class="unit" data-unit="days">
+          <span class="unit__value tnum" data-value="days">--</span>
+          <span class="unit__label">天</span>
         </div>
-        <button class="icon-btn" id="themeToggle" type="button"
-                aria-label="切换主题" title="切换主题">
-          <svg aria-hidden="true"><use id="themeIcon" href="#i-auto"></use></svg>
+        <div class="unit" data-unit="hours">
+          <span class="unit__value tnum" data-value="hours">--</span>
+          <span class="unit__label">时</span>
+        </div>
+        <div class="unit" data-unit="minutes">
+          <span class="unit__value tnum" data-value="minutes">--</span>
+          <span class="unit__label">分</span>
+        </div>
+        <div class="unit" data-unit="seconds">
+          <span class="unit__value tnum" data-value="seconds">--</span>
+          <span class="unit__label">秒</span>
+        </div>
+      </div>
+      <p class="sr-only" id="srStatus" aria-live="polite"></p>
+
+      <div class="reached" id="reachedBanner">
+        <svg aria-hidden="true"><use href="#i-star"></use></svg>
+        <span>已抵达。愿你落笔生花，金榜题名。</span>
+      </div>
+    </section>
+
+    <!-- ========== 征程面板：进度 + 指标 + 关键节点 ========== -->
+    <section class="panel journey progress" aria-labelledby="progressTitle">
+      <div class="progress__head">
+        <h2 id="progressTitle">高中进度</h2>
+        <b class="tnum" id="progressPercent">0%</b>
+      </div>
+
+      <div class="progress__track" role="progressbar"
+           aria-labelledby="progressTitle"
+           aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+           id="progressBar">
+        <div class="progress__fill" id="progressFill"></div>
+        <span class="progress__marker" id="progressMarker"></span>
+      </div>
+
+      <div class="progress__ends">
+        <span><b id="startLabel">2025.02.28</b> 启程</span>
+        <span><b id="targetLabel">2028.06.07</b> 抵达</span>
+      </div>
+
+      <ul class="stats">
+        <li class="stat">
+          <span class="stat__value tnum" id="statElapsed">--</span>
+          <span class="stat__key">已过天数</span>
+        </li>
+        <li class="stat">
+          <span class="stat__value tnum" id="statRemain">--</span>
+          <span class="stat__key">剩余天数</span>
+        </li>
+        <li class="stat">
+          <span class="stat__value tnum" id="statTotal">--</span>
+          <span class="stat__key">全程天数</span>
+        </li>
+      </ul>
+
+      <!-- 关键节点：由 JS 注入刻度与倒计时 chips -->
+      <div class="milestones" id="milestones" aria-label="关键节点"></div>
+    </section>
+
+    <!-- ========== 一言面板 ========== -->
+    <section class="panel quote">
+      <span class="quote__mark" aria-hidden="true">&ldquo;</span>
+      <button class="quote__refresh" id="quoteRefresh" type="button"
+              aria-label="换一句话" title="换一句话">
+        <svg aria-hidden="true"><use href="#i-refresh"></use></svg>
+      </button>
+      <blockquote class="quote__text" id="quoteText">正在为你取一句话……</blockquote>
+      <p class="quote__author" id="quoteAuthor"></p>
+    </section>
+
+    <!-- ========== 页脚 ========== -->
+    <footer class="foot">
+      <p class="foot__quote">每一天，都是离梦想更近的一步。</p>
+
+      <div class="foot__actions">
+        <button class="btn" id="shareBtn" type="button">
+          <svg aria-hidden="true"><use href="#i-copy"></use></svg>
+          <span>复制当前状态</span>
         </button>
-      </header>
+        <span class="badge is-load" id="quoteBadge">
+          <span class="badge__dot"></span>
+          <span id="quoteBadgeText">每日一言 · 获取中</span>
+        </span>
+      </div>
 
-      <!-- ========== 倒计时 ========== -->
-      <section>
-        <div class="countdown" id="countdown" role="timer" aria-live="off">
-          <div class="unit" data-unit="days">
-            <span class="unit__value tnum" data-value="days">--</span>
-            <span class="unit__label">Days</span>
-          </div>
-          <div class="unit" data-unit="hours">
-            <span class="unit__value tnum" data-value="hours">--</span>
-            <span class="unit__label">Hours</span>
-          </div>
-          <div class="unit" data-unit="minutes">
-            <span class="unit__value tnum" data-value="minutes">--</span>
-            <span class="unit__label">Minutes</span>
-          </div>
-          <div class="unit" data-unit="seconds">
-            <span class="unit__value tnum" data-value="seconds">--</span>
-            <span class="unit__label">Seconds</span>
-          </div>
-        </div>
-        <p class="sr-only" id="srStatus" aria-live="polite"></p>
-      </section>
+      <p class="foot__note">
+        免责声明：本页信息仅供参考，实际高考日期请以教育部门官方通知为准。<br>
+        最后更新：<span id="lastUpdated">--</span>
+      </p>
+      <p class="foot__meta">设计：深度神经网络（DNN） &amp; 无际航天</p>
+    </footer>
 
-      <!-- ========== 抵达横幅 ========== -->
-      <section>
-        <div class="reached" id="reachedBanner">
-          <svg aria-hidden="true"><use href="#i-star"></use></svg>
-          <span>已抵达。愿你落笔生花，金榜题名。</span>
-        </div>
-      </section>
-
-      <!-- ========== 进度 ========== -->
-      <section class="progress" aria-labelledby="progressTitle">
-        <div class="progress__head">
-          <h2 id="progressTitle">高中进度</h2>
-          <b class="tnum" id="progressPercent">0%</b>
-        </div>
-
-        <div class="progress__track" role="progressbar"
-             aria-labelledby="progressTitle"
-             aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
-             id="progressBar">
-          <div class="progress__fill" id="progressFill"></div>
-          <span class="progress__marker" id="progressMarker"></span>
-        </div>
-
-        <div class="progress__ends">
-          <span><b id="startLabel">2025.02.28</b> 启程</span>
-          <span><b id="targetLabel">2028.06.07</b> 抵达</span>
-        </div>
-
-        <ul class="stats">
-          <li class="stat">
-            <span class="stat__value tnum" id="statElapsed">--</span>
-            <span class="stat__key">已过天数</span>
-          </li>
-          <li class="stat">
-            <span class="stat__value tnum" id="statRemain">--</span>
-            <span class="stat__key">剩余天数</span>
-          </li>
-          <li class="stat">
-            <span class="stat__value tnum" id="statTotal">--</span>
-            <span class="stat__key">全程天数</span>
-          </li>
-        </ul>
-      </section>
-
-      <!-- ========== 每日一言 ========== -->
-      <section class="quote">
-        <span class="quote__mark" aria-hidden="true">&ldquo;</span>
-        <button class="quote__refresh" id="quoteRefresh" type="button"
-                aria-label="换一句话" title="换一句话">
-          <svg aria-hidden="true"><use href="#i-refresh"></use></svg>
-        </button>
-        <blockquote class="quote__text" id="quoteText">正在为你取一句话……</blockquote>
-        <p class="quote__author" id="quoteAuthor"></p>
-      </section>
-
-      <!-- ========== 页脚 ========== -->
-      <footer class="card__foot">
-        <p class="foot__quote">每一天，都是离梦想更近的一步。</p>
-
-        <div class="foot__actions">
-          <button class="btn" id="shareBtn" type="button">
-            <svg aria-hidden="true"><use href="#i-copy"></use></svg>
-            <span>复制当前状态</span>
-          </button>
-          <span class="badge is-load" id="quoteBadge">
-            <span class="badge__dot"></span>
-            <span id="quoteBadgeText">每日一言 · 获取中</span>
-          </span>
-        </div>
-
-        <p class="foot__note">
-          免责声明：本页信息仅供参考，实际高考日期请以教育部门官方通知为准。<br>
-          最后更新：<span id="lastUpdated">--</span>
-        </p>
-        <p class="foot__meta">设计：深度神经网络（DNN） &amp; 无际航天</p>
-      </footer>
-
-    </article>
   </main>
 
   <noscript>

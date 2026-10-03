@@ -14,6 +14,7 @@ import { createProgress }  from './modules/progress.js';
 import { createQuotes }    from './modules/quotes.js';
 import { createShare }     from './modules/share.js';
 import { createHolidayTheme } from './modules/holidayTheme.js';
+import { createMilestones }   from './modules/milestones.js';
 
 function boot() {
   const start  = toDate(CONFIG.timeline.start);
@@ -50,6 +51,15 @@ function boot() {
     root: $('.progress'),
     start,
     target,
+  });
+
+  /* 关键节点：进度条刻度 + 倒计时 chips */
+  const milestones = createMilestones({
+    defs: CONFIG.milestones,
+    start,
+    target,
+    trackEl: $('#progressBar'),
+    listEl: $('#milestones'),
   });
 
   const quotes = createQuotes({
@@ -99,6 +109,7 @@ function boot() {
       syncBanner(state.parts.passed);
       quotes.refreshIfNewDay();
       holidayTheme.update(now);
+      milestones.update(now);
     },
   });
 
@@ -108,6 +119,7 @@ function boot() {
   state.stats = progress.update(first);
   syncBanner(state.parts.passed);
   holidayTheme.update(first);
+  milestones.update(first);
 
   quotes.load();
   ticker.start();

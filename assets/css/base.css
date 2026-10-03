@@ -1,5 +1,5 @@
 /* =============================================================
-   base.css — 重置、全局排版、柔光背景、可访问性基础
+   base.css — 重置、全局排版、液态背景、可访问性基础
    ============================================================= */
 
 *,
@@ -23,7 +23,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ---------- 柔光背景：玻璃必须有东西可透 ---------- */
+/* ---------- 液态背景：玻璃必须有东西可透 ---------- */
 .backdrop {
   position: fixed;
   inset: 0;
@@ -33,35 +33,50 @@ body {
   pointer-events: none;
 }
 
+/* 极光底层：大面积、低饱和的定向渐变色带，给玻璃一层"底色流动" */
+.aurora {
+  position: absolute;
+  inset: -20%;
+  background: var(--aurora);
+  opacity: var(--aurora-opacity);
+  animation: aurora-sway 26s var(--ease-out) infinite alternate;
+  will-change: transform;
+}
+
 /* 用径向渐变代替 blur 滤镜：同样是柔边，但几乎不耗 GPU */
 .blob {
   position: absolute;
   border-radius: 50%;
   opacity: var(--blob-opacity);
   will-change: transform;
+  mix-blend-mode: normal;
 }
 
 .blob--1 {
-  width: 62vmax; height: 62vmax;
-  top: -18vmax; left: -12vmax;
-  background: radial-gradient(circle at 50% 50%, var(--blob-1) 0%, transparent 68%);
+  width: 64vmax; height: 64vmax;
+  top: -20vmax; left: -14vmax;
+  background: radial-gradient(circle at 50% 50%, var(--blob-1) 0%, transparent 66%);
   animation: drift-1 34s var(--ease-out) infinite alternate;
 }
 
 .blob--2 {
-  width: 54vmax; height: 54vmax;
-  top: 22vmax; right: -16vmax;
-  background: radial-gradient(circle at 50% 50%, var(--blob-2) 0%, transparent 68%);
+  width: 56vmax; height: 56vmax;
+  top: 20vmax; right: -18vmax;
+  background: radial-gradient(circle at 50% 50%, var(--blob-2) 0%, transparent 66%);
   animation: drift-2 42s var(--ease-out) infinite alternate;
 }
 
 .blob--3 {
-  width: 46vmax; height: 46vmax;
-  bottom: -14vmax; left: 24vmax;
-  background: radial-gradient(circle at 50% 50%, var(--blob-3) 0%, transparent 68%);
+  width: 48vmax; height: 48vmax;
+  bottom: -16vmax; left: 22vmax;
+  background: radial-gradient(circle at 50% 50%, var(--blob-3) 0%, transparent 66%);
   animation: drift-3 38s var(--ease-out) infinite alternate;
 }
 
+@keyframes aurora-sway {
+  from { transform: translate3d(-2%, -1%, 0) rotate(-1deg); }
+  to   { transform: translate3d(2%, 1.5%, 0) rotate(1deg); }
+}
 @keyframes drift-1 {
   from { transform: translate3d(0, 0, 0) scale(1); }
   to   { transform: translate3d(8vmax, 6vmax, 0) scale(1.1); }
@@ -113,7 +128,7 @@ a:hover { text-decoration: underline; }
   border: 0;
 }
 
-/* 尊重系统的"减少动态效果"设置：光斑静止 */
+/* 尊重系统的"减少动态效果"设置：光斑 / 极光 / 扫光全部静止 */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -123,5 +138,5 @@ a:hover { text-decoration: underline; }
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .blob { animation: none !important; }
+  .blob, .aurora { animation: none !important; }
 }
