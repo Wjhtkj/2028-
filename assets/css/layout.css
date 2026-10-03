@@ -123,10 +123,44 @@
   animation: panel-in var(--dur-slow) var(--ease-out) 360ms both;
 }
 
-/* ---------- 窄屏 ---------- */
+/* ---------- 小屏手机 ---------- */
 @media (max-width: 560px) {
-  .stage { gap: var(--sp-4); padding: var(--sp-6) var(--sp-3); }
-  .hero    { padding: var(--sp-5) var(--sp-4); border-radius: 28px; }
-  .journey { padding: var(--sp-4) var(--sp-4); }
-  .quote   { padding: var(--sp-4) var(--sp-4); }
+  .stage { gap: var(--sp-4); padding: var(--sp-5) var(--sp-3); }
+  .hero    { padding: var(--sp-5) var(--sp-4); border-radius: var(--r-lg); }
+  .journey { padding: var(--sp-4); }
+  .quote   { padding: var(--sp-4); }
+  .theme-fab { width: 42px; height: 42px; top: var(--sp-3); right: var(--sp-3); }
+  .theme-fab svg { width: 17px; height: 17px; }
+}
+
+/* ---------- 超小屏（320-360）进一步收紧 ---------- */
+@media (max-width: 374px) {
+  .stage { gap: var(--sp-3); padding: var(--sp-4) var(--sp-3); }
+  .hero    { padding: var(--sp-4) var(--sp-3); border-radius: 24px; }
+  .journey { padding: var(--sp-3); }
+  .quote   { padding: var(--sp-3); }
+  .theme-fab { width: 38px; height: 38px; top: 12px; right: 12px; }
+  .theme-fab svg { width: 16px; height: 16px; }
+}
+
+/* ---------- 横屏短高度手机：垂直空间珍贵，大幅压缩 ---------- */
+@media (orientation: landscape) and (max-height: 560px) {
+  .stage {
+    gap: var(--sp-3);
+    padding: var(--sp-4) var(--sp-4);
+    justify-content: flex-start;
+  }
+  .hero    { padding: var(--sp-4) var(--sp-5); border-radius: var(--r-lg); }
+  .journey { padding: var(--sp-3) var(--sp-4); }
+  .quote   { padding: var(--sp-3) var(--sp-4); }
+  .theme-fab { top: 10px; right: 10px; width: 38px; height: 38px; }
+  .theme-fab svg { width: 16px; height: 16px; }
+}
+
+/* ---------- 桌面 / 大屏：稍微放宽，避免两侧太空 ---------- */
+@media (min-width: 1024px) {
+  .stage { max-width: 720px; gap: var(--sp-6); padding: 56px var(--sp-5); }
+  .hero    { padding: var(--sp-7) var(--sp-6); }
+  .journey { padding: var(--sp-6); }
+  .quote   { padding: var(--sp-5) var(--sp-6); }
 }

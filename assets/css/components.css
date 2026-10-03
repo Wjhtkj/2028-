@@ -396,23 +396,130 @@
   opacity: 0.8;
 }
 
-/* ---------- 10. 窄屏适配 ---------- */
+/* ---------- 10. 响应式适配 ---------- */
 
+/* 小屏手机：收紧但不单列指标，保持 3 列更省纵向空间 */
 @media (max-width: 480px) {
-  .countdown { gap: var(--sp-2); }
-  .unit[data-unit="days"] .unit__value { font-size: clamp(3.9rem, 24vw, 5.6rem); }
-  .stats { grid-template-columns: 1fr; }
-  .stat {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 10px 16px;
-  }
-  .progress__ends { font-size: 0.7rem; }
-}
+  .eyebrow { font-size: 0.6rem; letter-spacing: 0.24em; }
+  .title   { font-size: clamp(1.55rem, 5vw, 2rem); }
+  .subtitle { font-size: 0.82rem; }
 
-@media (max-width: 360px) {
+  .countdown { gap: var(--sp-2); margin-top: var(--sp-4); }
+  .unit[data-unit="days"] { padding: var(--sp-1) 0 var(--sp-1); }
+  .unit[data-unit="days"] .unit__value { font-size: clamp(3.6rem, 22vw, 5.4rem); }
+  .unit[data-unit="days"] .unit__label { font-size: 0.72rem; }
+
+  .unit[data-unit="hours"],
+  .unit[data-unit="minutes"],
+  .unit[data-unit="seconds"] {
+    padding: var(--sp-2) var(--sp-2) calc(var(--sp-2) - 1px);
+    border-radius: var(--r-sm);
+  }
   .unit[data-unit="hours"] .unit__value,
   .unit[data-unit="minutes"] .unit__value,
-  .unit[data-unit="seconds"] .unit__value { font-size: 1.4rem; }
+  .unit[data-unit="seconds"] .unit__value {
+    font-size: clamp(1.35rem, 5.5vw, 1.75rem);
+  }
+  .unit[data-unit="hours"] .unit__label,
+  .unit[data-unit="minutes"] .unit__label,
+  .unit[data-unit="seconds"] .unit__label {
+    font-size: 0.55rem;
+  }
+
+  .stats { gap: var(--sp-2); margin-top: var(--sp-3); }
+  .stat { padding: var(--sp-2) var(--sp-1); }
+  .stat__value { font-size: 1.05rem; }
+  .stat__key { font-size: 0.62rem; }
+
+  .progress__head { font-size: 0.8rem; margin-bottom: var(--sp-2); }
+  .progress__head b { font-size: 1.05rem; }
+  .progress__ends { font-size: 0.68rem; margin-top: var(--sp-2); }
+  .progress__track { height: 7px; }
+
+  .milestones { margin-top: var(--sp-3); gap: 6px; }
+  .ms { padding: 6px 11px; font-size: 0.68rem; gap: 5px; }
+
+  .quote__text { font-size: clamp(0.98rem, 3vw, 1.12rem); padding-right: var(--sp-5); line-height: 1.7; }
+  .quote__author { font-size: 0.78rem; }
+  .quote__mark { font-size: 2rem; left: var(--sp-3); }
+  .quote__refresh { top: var(--sp-2); right: var(--sp-2); width: 32px; height: 32px; }
+
+  .foot__quote { font-size: 0.84rem; margin-bottom: var(--sp-3); }
+  .foot__actions { margin-bottom: var(--sp-3); }
+  .btn { padding: 9px 16px; font-size: 0.78rem; }
+  .badge { padding: 6px 12px; font-size: 0.68rem; }
+  .foot__note { font-size: 0.68rem; }
+  .foot__meta { font-size: 0.66rem; }
+}
+
+/* 超小屏（320-360）进一步收紧 */
+@media (max-width: 374px) {
+  .countdown { gap: 8px; }
+  .unit[data-unit="days"] .unit__value { font-size: clamp(3.2rem, 22vw, 4.4rem); }
+  .unit[data-unit="hours"] .unit__value,
+  .unit[data-unit="minutes"] .unit__value,
+  .unit[data-unit="seconds"] .unit__value { font-size: clamp(1.15rem, 5vw, 1.4rem); }
+  .stat__value { font-size: 0.98rem; }
+  .progress__ends { font-size: 0.62rem; gap: var(--sp-2); }
+}
+
+/* 横屏短高度手机：垂直空间珍贵，核心信息优先一屏 */
+@media (orientation: landscape) and (max-height: 560px) {
+  .eyebrow { display: none; }
+  html[data-festival] .eyebrow { display: block; } /* 节日标识仍需可见 */
+
+  .title { font-size: clamp(1.4rem, 6vh, 2rem); }
+  .subtitle { font-size: 0.75rem; margin-top: var(--sp-1); }
+
+  .countdown { gap: var(--sp-2); margin-top: var(--sp-2); }
+  .unit[data-unit="days"] { padding: 0; }
+  .unit[data-unit="days"] .unit__value { font-size: clamp(2.8rem, 24vh, 4.6rem); line-height: 0.9; }
+  .unit[data-unit="days"] .unit__label { font-size: 0.65rem; margin-top: var(--sp-1); }
+
+  .unit[data-unit="hours"],
+  .unit[data-unit="minutes"],
+  .unit[data-unit="seconds"] {
+    padding: var(--sp-2) var(--sp-2);
+    border-radius: var(--r-sm);
+  }
+  .unit[data-unit="hours"] .unit__value,
+  .unit[data-unit="minutes"] .unit__value,
+  .unit[data-unit="seconds"] .unit__value { font-size: clamp(1.1rem, 5vh, 1.5rem); }
+  .unit[data-unit="hours"] .unit__label,
+  .unit[data-unit="minutes"] .unit__label,
+  .unit[data-unit="seconds"] .unit__label { font-size: 0.55rem; }
+
+  .reached { margin-top: var(--sp-3); padding: var(--sp-3); font-size: 0.85rem; }
+
+  .progress__head { margin-bottom: var(--sp-2); font-size: 0.78rem; }
+  .progress__head b { font-size: 1rem; }
+  .progress__ends { font-size: 0.65rem; margin-top: var(--sp-2); }
+  .stats { margin-top: var(--sp-3); gap: var(--sp-2); }
+  .stat { padding: var(--sp-2); }
+  .stat__value { font-size: 1rem; }
+  .stat__key { font-size: 0.6rem; }
+  .milestones { margin-top: var(--sp-3); gap: 6px; }
+  .ms { padding: 5px 10px; font-size: 0.64rem; }
+
+  .quote__text { font-size: clamp(0.9rem, 2.5vh, 1.05rem); line-height: 1.6; padding-right: var(--sp-5); }
+  .quote__author { font-size: 0.74rem; margin-top: var(--sp-2); padding-top: var(--sp-2); }
+  .quote__mark { font-size: 1.8rem; }
+  .quote__refresh { width: 30px; height: 30px; }
+
+  .foot__quote { display: none; }
+  .foot__actions { margin-bottom: var(--sp-3); }
+  .btn { padding: 8px 14px; font-size: 0.74rem; }
+  .foot__note { font-size: 0.65rem; }
+}
+
+/* ---------- 11. 触控优化：手指设备保证最小点击区域 ---------- */
+@media (pointer: coarse) {
+  .theme-fab,
+  .quote__refresh,
+  .btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .quote__refresh { width: 40px; height: 40px; }
+  .btn { padding-top: 12px; padding-bottom: 12px; }
 }
