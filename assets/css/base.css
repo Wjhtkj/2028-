@@ -8,7 +8,15 @@
 
 * { margin: 0; padding: 0; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* 关键：移动端禁止横向拖动。html + body 必须同时约束，
+     否则背景层的溢出会撑大 layout viewport，把同样 fixed 的主题按钮
+     定位到屏幕外。hidden 是旧版 Safari 兜底，clip 是现代写法
+     （不创建滚动容器，支持较新浏览器优先）。 */
+  overflow-x: hidden;
+  overflow-x: clip;
+}
 
 body {
   min-height: 100vh;
@@ -21,6 +29,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 /* ---------- 液态背景：玻璃必须有东西可透 ---------- */
@@ -29,6 +38,12 @@ body {
   inset: 0;
   z-index: -1;
   overflow: hidden;
+  overflow: clip;
+  /* 关键：把内部的超大光斑 / 极光完全隔离在这个盒子里。
+     否则移动端会把 fixed 包含块撑大，导致同样 fixed 的主题按钮
+     被定位到屏幕外，并让整页可以左右拖动。
+     contain 是额外保险，旧浏览器不支持时上面的 overflow 仍生效。 */
+  contain: layout paint size;
   background: var(--bg-base);
   pointer-events: none;
 }
