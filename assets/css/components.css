@@ -524,3 +524,113 @@
   .quote__refresh { width: 40px; height: 40px; }
   .btn { padding-top: 12px; padding-bottom: 12px; }
 }
+
+/* =============================================================
+   12. iOS 次级玻璃：玻璃之上再叠玻璃
+   面板已经折射过背景，内部控件再模糊一次既失真又费 GPU。
+   iOS 的做法是让次级镜片"更薄"：只保留上缘镜面高光、
+   下缘厚度反光和一圈极淡轮廓，靠层次而非模糊区分。
+   本节统一覆盖前面的旧声明，字号 / 间距 / 响应式断点全部不动。
+   ============================================================= */
+
+.unit[data-unit="hours"],
+.unit[data-unit="minutes"],
+.unit[data-unit="seconds"],
+.stat,
+.reached,
+.ms {
+  border: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background:
+    linear-gradient(180deg, var(--glass-3), transparent 58%),
+    var(--glass-2);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-border-soft),
+    0 0 0 1px var(--glass-border-soft);
+}
+
+/* 时/分/秒标签提升对比，贴合 iOS 的次级文本层级 */
+.unit[data-unit="hours"] .unit__label,
+.unit[data-unit="minutes"] .unit__label,
+.unit[data-unit="seconds"] .unit__label { color: var(--text-2); }
+
+.ms.is-today {
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 0 0 1.5px var(--accent);
+}
+
+/* ---------- 13. 浮起的可点击胶囊：镜面高光 + 弹性反馈 ---------- */
+.quote__refresh,
+.btn,
+.badge {
+  border: 0;
+  background:
+    radial-gradient(110% 88% at 50% 0%, var(--glass-3), transparent 76%),
+    var(--glass-3);
+  box-shadow:
+    var(--shadow-soft),
+    inset 0 1.5px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-border-soft),
+    0 0 0 1px var(--glass-border-soft);
+}
+
+/* 面板内的圆钮无需再模糊；页脚按钮浮在背景上，仍需模糊 */
+.quote__refresh {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.btn,
+.badge {
+  backdrop-filter: blur(14px) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(14px) saturate(var(--glass-sat));
+}
+
+.btn,
+.quote__refresh {
+  transition: color var(--dur-fast),
+              transform var(--dur-mid) var(--ease-jelly),
+              box-shadow var(--dur-mid) var(--ease-ios);
+}
+.btn:hover {
+  color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow:
+    var(--shadow-card),
+    inset 0 1.5px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-border-soft),
+    0 0 0 1px var(--glass-border);
+}
+.btn:active { transform: scale(0.93); }
+.quote__refresh:hover { color: var(--accent); transform: scale(1.09) rotate(-12deg); }
+.quote__refresh:active { transform: scale(0.84) rotate(-40deg); }
+
+/* ---------- 14. 进度条：内凹轨道 + 带镜面高光的填充 + 玻璃珠端点 ---------- */
+.progress__track {
+  background: linear-gradient(180deg, var(--glass-2), var(--glass-3));
+  box-shadow:
+    inset 0 1px 2px var(--divider),
+    inset 0 -1px 0 var(--glass-highlight),
+    0 0 0 1px var(--glass-border-soft);
+}
+.progress__fill { box-shadow: inset 0 1px 0 var(--glass-highlight); }
+.progress__marker {
+  background: var(--pearl);
+  box-shadow:
+    inset 0 -2px 3px var(--glass-border-soft),
+    0 0 0 4px var(--accent-soft),
+    0 2px 6px var(--divider);
+}
+
+/* ---------- 15. 同心连续圆角：次级卡片与外层面板曲率一致 ---------- */
+@supports (corner-shape: squircle) {
+  .unit[data-unit="hours"],
+  .unit[data-unit="minutes"],
+  .unit[data-unit="seconds"],
+  .stat,
+  .reached {
+    corner-shape: superellipse(4);
+  }
+}

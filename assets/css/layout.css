@@ -1,5 +1,11 @@
 /* =============================================================
-   layout.css — 页面骨架、液态玻璃面板、悬浮控件
+   layout.css — 页面骨架、iOS 液态玻璃面板、悬浮控件
+
+   iOS Liquid Glass 的"玻璃感"来自光学而非单纯模糊，每个面板叠四层：
+     ① 主体：半透明基底 + 顶部透镜提亮 + backdrop 折射（blur/saturate/lum）
+     ② 厚度：上缘镜面高光、下缘与两侧反射、极淡外轮廓（box-shadow inset）
+     ③ 表面：窄而亮的镜面扫光周期性掠过
+     ④ 边缘：白色高光环 + 一圈极淡棱镜色散（光学层，见 .panel__optics）
    ============================================================= */
 
 /* 舞台：内容纵向排开、水平居中，兼容刘海屏 */
@@ -26,29 +32,66 @@
   }
 }
 
-/* ---------- 液态玻璃面板（通用） ---------- */
+/* ---------- ① 玻璃主体：透镜 + 折射 + 厚度 ---------- */
 .panel {
   position: relative;
+  isolation: isolate;              /* 把内部光学层锁在本面板的层叠上下文里 */
   width: 100%;
   border-radius: var(--r-lg);
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-card), var(--shadow-inset);
-  backdrop-filter: blur(var(--blur)) saturate(180%);
-  -webkit-backdrop-filter: blur(var(--blur)) saturate(180%);
-  animation: panel-in var(--dur-slow) var(--ease-out) both;
+  /* 顶部透镜提亮：光线从上方进入玻璃，中心比边缘更亮更透 */
+  background:
+    radial-gradient(125% 82% at 50% -14%, var(--glass-3) 0%, transparent 64%),
+    var(--glass);
+  /* 不用实边框：iOS 靠镜面高光与厚度反光界定玻璃边界 */
+  box-shadow:
+    var(--shadow-card),
+    inset 0 1.5px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-border-soft),
+    inset 1px 0 0 var(--glass-border-soft),
+    inset -1px 0 0 var(--glass-border-soft),
+    0 0 0 1px var(--glass-border-soft);
+  backdrop-filter: blur(var(--blur)) saturate(var(--glass-sat)) brightness(var(--glass-lum));
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(var(--glass-sat)) brightness(var(--glass-lum));
+  /* backwards：延迟期间隐藏，结束后不锁死 transform（否则 hover/active 失效） */
+  animation: panel-in var(--dur-slow) var(--ease-ios) backwards;
 }
 
-/* 液态签名 ①：发光描边（mask 镂空出 1.5px 的渐变亮边） */
+/* ---------- ③ 表面：流动镜面扫光（窄、亮、周期性） ---------- */
 .panel::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  padding: 1.5px;
-  background: linear-gradient(155deg,
-              var(--edge-1) 0%, transparent 32%,
-              transparent 62%, var(--edge-2) 100%);
+  background: linear-gradient(108deg,
+              transparent 36%,
+              var(--sheen) 47%,
+              var(--glass-highlight) 50%,
+              var(--sheen) 53%,
+              transparent 64%);
+  opacity: var(--sheen-opacity);
+  transform: translateX(-140%);
+  animation: panel-sheen 10s var(--ease-ios) infinite;
+  pointer-events: none;
+}
+
+@keyframes panel-sheen {
+  0%        { transform: translateX(-140%); }
+  48%, 100% { transform: translateX(140%); }
+}
+
+/* ---------- ④ 边缘光学层：高光环 + 棱镜色散 ---------- */
+.panel__optics {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.panel__optics::before,
+.panel__optics::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
           mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -56,23 +99,21 @@
   pointer-events: none;
 }
 
-/* 液态签名 ②：镜面扫光（周期性掠过的柔亮带） */
-.panel::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(115deg,
-              transparent 32%, var(--sheen) 48%, transparent 60%);
-  opacity: var(--sheen-opacity);
-  transform: translateX(-130%);
-  animation: panel-sheen 9s var(--ease-out) infinite;
-  pointer-events: none;
+/* 白色镜面高光环：上缘受光最亮，下缘只留一点反射 */
+.panel__optics::before {
+  padding: 1.6px;
+  background: linear-gradient(160deg,
+              var(--edge-1) 0%,
+              transparent 34%,
+              transparent 62%,
+              var(--edge-2) 100%);
 }
 
-@keyframes panel-sheen {
-  0%        { transform: translateX(-130%); }
-  46%, 100% { transform: translateX(130%); }
+/* 棱镜色散：玻璃把背景光分离出的极淡彩边，是 Liquid Glass 最标志性的细节 */
+.panel__optics::after {
+  padding: 3.2px;
+  background: var(--prism);
+  opacity: var(--prism-opacity);
 }
 
 /* 面板交错入场：依 DOM 顺序依次上浮 */
@@ -81,7 +122,7 @@
 .panel:nth-child(3) { animation-delay: 280ms; }
 
 @keyframes panel-in {
-  from { opacity: 0; transform: translateY(18px) scale(0.985); }
+  from { opacity: 0; transform: translateY(20px) scale(0.975); }
   to   { opacity: 1; transform: none; }
 }
 
@@ -90,7 +131,7 @@
 .journey { padding: var(--sp-5) var(--sp-6); }
 .quote   { padding: var(--sp-5) var(--sp-6) var(--sp-5); }
 
-/* ---------- 悬浮主题切换钮 ---------- */
+/* ---------- 悬浮主题切换钮：浮起的胶囊镜片 ---------- */
 .theme-fab {
   position: fixed;
   top: calc(var(--sp-4) + env(safe-area-inset-top, 0px));
@@ -101,26 +142,80 @@
   display: grid;
   place-items: center;
   border-radius: var(--r-pill);
-  border: 1px solid var(--glass-border);
-  background: var(--glass-3);
+  background:
+    radial-gradient(100% 70% at 50% 0%, var(--glass-3), transparent 72%),
+    var(--glass-3);
   color: var(--text-2);
-  box-shadow: var(--shadow-soft), var(--shadow-inset);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  transition: color var(--dur-fast), transform var(--dur-fast) var(--ease-spring),
-              background var(--dur-fast);
-  animation: panel-in var(--dur-slow) var(--ease-out) 380ms both;
+  box-shadow:
+    var(--shadow-soft),
+    inset 0 1.5px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-border-soft),
+    0 0 0 1px var(--glass-border-soft);
+  backdrop-filter: blur(18px) saturate(var(--glass-sat)) brightness(var(--glass-lum));
+  -webkit-backdrop-filter: blur(18px) saturate(var(--glass-sat)) brightness(var(--glass-lum));
+  transition: color var(--dur-fast), transform var(--dur-mid) var(--ease-jelly),
+              box-shadow var(--dur-mid) var(--ease-ios);
+  animation: panel-in var(--dur-slow) var(--ease-ios) 380ms backwards;
 }
-.theme-fab:hover { color: var(--accent); }
-.theme-fab:active { transform: scale(0.9); }
-.theme-fab svg { width: 19px; height: 19px; display: block; }
+.theme-fab::before,
+.theme-fab::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          mask-composite: exclude;
+  pointer-events: none;
+}
+.theme-fab::before {
+  padding: 1.5px;
+  background: linear-gradient(155deg, var(--edge-1), transparent 46%, var(--edge-2));
+}
+.theme-fab::after {
+  padding: 2.8px;
+  background: var(--prism);
+  opacity: var(--prism-opacity);
+}
+.theme-fab:hover {
+  color: var(--accent);
+  transform: translateY(-2px) scale(1.06);
+  box-shadow:
+    var(--shadow-card),
+    inset 0 1.5px 0 var(--glass-highlight),
+    inset 0 -1px 0 var(--glass-border-soft),
+    0 0 0 1px var(--glass-border-soft);
+}
+.theme-fab:active { transform: scale(0.86); }
+.theme-fab svg {
+  width: 19px; height: 19px;
+  display: block;
+  position: relative;
+  transition: transform var(--dur-mid) var(--ease-jelly);
+}
+.theme-fab:active svg { transform: rotate(-35deg) scale(0.88); }
 
 /* ---------- 页脚 ---------- */
 .foot {
   width: 100%;
   text-align: center;
   padding: var(--sp-3) var(--sp-2) var(--sp-1);
-  animation: panel-in var(--dur-slow) var(--ease-out) 360ms both;
+  animation: panel-in var(--dur-slow) var(--ease-ios) 360ms backwards;
+}
+
+/* ---------- 同心连续圆角（squircle）：支持时启用，旧浏览器自动回退 ---------- */
+@supports (corner-shape: squircle) {
+  .panel,
+  .panel__optics,
+  .panel::before,
+  .panel__optics::before,
+  .panel__optics::after,
+  .theme-fab,
+  .theme-fab::before,
+  .theme-fab::after {
+    corner-shape: superellipse(4);
+  }
 }
 
 /* ---------- 小屏手机 ---------- */

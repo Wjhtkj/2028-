@@ -1,6 +1,10 @@
 /* =============================================================
-   tokens.css — 设计令牌（液态玻璃 Liquid Glass）
+   tokens.css — 设计令牌（iOS 液态玻璃 / iOS Liquid Glass）
    全站唯一的"样式来源"。改配色只需改这里，JS 不碰任何颜色值。
+
+   iOS 玻璃与普通毛玻璃的区别在"光学"而非"模糊"：
+   折射色散（prism）、镜面高光（specular）、玻璃厚度（depth）、
+   同心连续圆角（squircle）。颜色仍只在这里定义。
    ============================================================= */
 
 :root {
@@ -15,20 +19,34 @@
   --aurora: linear-gradient(120deg, #cdd9ff 0%, #e6d4ff 45%, #ffe0d2 100%);
   --aurora-opacity: 0.5;
 
-  /* —— 玻璃层：由外到内 —— */
-  --glass:       rgba(255, 255, 255, 0.42);
-  --glass-2:     rgba(255, 255, 255, 0.30);
-  --glass-3:     rgba(255, 255, 255, 0.55);
-  --glass-border:      rgba(255, 255, 255, 0.65);
-  --glass-border-soft: rgba(255, 255, 255, 0.35);
-  --glass-highlight:   rgba(255, 255, 255, 0.85);
-  --blur: 30px;
+  /* —— 玻璃层：iOS 更透，让背后色彩真正"透进来" —— */
+  --glass:       rgba(255, 255, 255, 0.36);
+  --glass-2:     rgba(255, 255, 255, 0.22);
+  --glass-3:     rgba(255, 255, 255, 0.52);
+  --glass-border:      rgba(255, 255, 255, 0.60);
+  --glass-border-soft: rgba(255, 255, 255, 0.30);
+  --glass-highlight:   rgba(255, 255, 255, 0.92);
+  --blur: 34px;
 
   /* —— 液态签名：发光描边 + 镜面扫光 —— */
-  --edge-1: rgba(255, 255, 255, 0.95);   /* 受光侧（左上）亮边 */
-  --edge-2: rgba(255, 255, 255, 0.40);   /* 背光侧（右下）亮边 */
-  --sheen:  rgba(255, 255, 255, 0.50);   /* 扫光 */
-  --sheen-opacity: 0.5;
+  --edge-1: rgba(255, 255, 255, 0.95);   /* 受光侧（上缘）镜面高光 */
+  --edge-2: rgba(255, 255, 255, 0.40);   /* 背光侧（下缘）反射 */
+  --sheen:  rgba(255, 255, 255, 0.62);   /* 流动镜面扫光 */
+  --sheen-opacity: 0.55;
+
+  /* —— iOS 光学层：主题无关，浅/深/节日共用 —— */
+  /* 棱镜色散：玻璃边缘把背景光分离出的极淡彩边（Liquid Glass 标志） */
+  --prism: conic-gradient(from 205deg at 50% 50%,
+             rgba(255, 132, 186, 0.55) 0%,
+             rgba(255, 214, 128, 0.50) 20%,
+             rgba(132, 238, 200, 0.50) 40%,
+             rgba(126, 190, 255, 0.55) 60%,
+             rgba(190, 148, 255, 0.55) 80%,
+             rgba(255, 132, 186, 0.55) 100%);
+  --prism-opacity: 0.16;
+  --glass-sat: 195%;      /* 玻璃吸收背景色后的饱和度提升 */
+  --glass-lum: 1.04;      /* 轻微提亮，模拟折射透镜 */
+  --pearl: #ffffff;       /* 进度端点 / 玻璃珠的高光芯（浅深通用） */
 
   /* —— 文本层级 —— */
   --text-1: #171f2d;
@@ -48,11 +66,11 @@
   /* —— 分隔线 —— */
   --divider: rgba(23, 31, 45, 0.08);
 
-  /* —— 圆角：液态玻璃爱大圆角 —— */
-  --r-xl: 36px;
-  --r-lg: 28px;
-  --r-md: 20px;
-  --r-sm: 14px;
+  /* —— 圆角：iOS 连续大圆角，内外同心 —— */
+  --r-xl: 42px;
+  --r-lg: 34px;
+  --r-md: 24px;
+  --r-sm: 18px;
   --r-pill: 999px;
 
   /* —— 间距节奏 —— */
@@ -65,13 +83,16 @@
   --sp-7: 52px;
 
   /* —— 字体 —— */
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-               "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
-               Roboto, Helvetica, Arial, sans-serif;
+  /* iOS 上优先命中 SF Pro；中文回落苹方 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+               "PingFang SC", "Hiragino Sans GB", "Segoe UI",
+               "Microsoft YaHei", Roboto, Helvetica, Arial, sans-serif;
 
   /* —— 动效 —— */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);      /* iOS 标准减速 */
   --ease-spring: cubic-bezier(0.34, 1.4, 0.5, 1);
+  --ease-jelly:  cubic-bezier(0.34, 1.56, 0.64, 1); /* 果冻回弹 */
   --dur-fast: 160ms;
   --dur-mid:  340ms;
   --dur-slow: 680ms;
@@ -94,13 +115,13 @@
   --glass-3:     rgba(255, 255, 255, 0.10);
   --glass-border:      rgba(255, 255, 255, 0.15);
   --glass-border-soft: rgba(255, 255, 255, 0.08);
-  --glass-highlight:   rgba(255, 255, 255, 0.14);
-  --blur: 26px;
+  --glass-highlight:   rgba(255, 255, 255, 0.16);
+  --blur: 28px;
 
-  --edge-1: rgba(255, 255, 255, 0.30);
+  --edge-1: rgba(255, 255, 255, 0.34);
   --edge-2: rgba(255, 255, 255, 0.07);
-  --sheen:  rgba(255, 255, 255, 0.10);
-  --sheen-opacity: 0.35;
+  --sheen:  rgba(255, 255, 255, 0.12);
+  --sheen-opacity: 0.38;
 
   --text-1: #eef2f9;
   --text-2: #a5b1c4;
@@ -171,13 +192,13 @@
 :root[data-festival] {
   color-scheme: light;
 
-  --glass:       rgba(255, 255, 255, 0.46);
-  --glass-2:     rgba(255, 255, 255, 0.33);
-  --glass-3:     rgba(255, 255, 255, 0.60);
-  --glass-border:      rgba(255, 255, 255, 0.70);
-  --glass-border-soft: rgba(255, 255, 255, 0.40);
-  --glass-highlight:   rgba(255, 255, 255, 0.90);
-  --blur: 30px;
+  --glass:       rgba(255, 255, 255, 0.40);
+  --glass-2:     rgba(255, 255, 255, 0.26);
+  --glass-3:     rgba(255, 255, 255, 0.56);
+  --glass-border:      rgba(255, 255, 255, 0.66);
+  --glass-border-soft: rgba(255, 255, 255, 0.36);
+  --glass-highlight:   rgba(255, 255, 255, 0.94);
+  --blur: 34px;
 
   --edge-1: rgba(255, 255, 255, 0.95);
   --edge-2: rgba(255, 255, 255, 0.42);
@@ -205,8 +226,8 @@
   --glass-3:     rgba(255, 255, 255, 0.11);
   --glass-border:      rgba(255, 255, 255, 0.16);
   --glass-border-soft: rgba(255, 255, 255, 0.09);
-  --glass-highlight:   rgba(255, 255, 255, 0.15);
-  --blur: 26px;
+  --glass-highlight:   rgba(255, 255, 255, 0.16);
+  --blur: 28px;
 
   --edge-1: rgba(255, 255, 255, 0.30);
   --edge-2: rgba(255, 255, 255, 0.07);

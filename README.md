@@ -1,6 +1,7 @@
 # 2028 高考倒计时 · 重写版
 
 原站 `https://2028.wjhtkjwz.eu.org` 的完整重写。功能等价，代码结构、可维护性与视觉表现全部重做。
+前端采用 **iOS 液态玻璃（iOS Liquid Glass）**：折射透镜、镜面高光环、棱镜色散、同心超椭圆圆角与浮起胶囊控件。
 
 ---
 
@@ -37,9 +38,9 @@ npx serve .
 └── assets/
     ├── css/
     │   ├── tokens.css          设计令牌：颜色/间距/圆角/字体/动效（唯一配色来源）
-    │   ├── base.css            重置、全局排版、可访问性基础
-    │   ├── layout.css          页面骨架与区块布局
-    │   └── components.css      各功能模块的组件样式
+    │   ├── base.css            重置、液态背景、可访问性基础
+    │   ├── layout.css          页面骨架 + iOS 液态玻璃面板（光学层）
+    │   └── components.css      组件样式（含次级玻璃胶囊与弹性反馈）
     └── js/
         ├── config.js           全站唯一配置源（时间轴、接口、主题）
         ├── core/               与业务无关的基础层
@@ -47,17 +48,17 @@ npx serve .
         │   ├── ticker.js       统一心跳源
         │   ├── storage.js      localStorage 安全封装
         │   └── dom.js          DOM 工具（脏检查、事件、一次性动画）
-    ├── data/
-    │   ├── festivals.js    节日公历日期表（自动主题数据源）
-    │   └── quotes.js       本地句库（离线兜底）
-    ├── modules/            业务模块（各自独立、可单独替换）
-    │   ├── countdown.js    倒计时显示
-    │   ├── progress.js     高中进度条
-    │   ├── milestones.js   关键节点（进度刻度 + 倒计时 chips）
-    │   ├── quotes.js       每日一言
-    │   ├── theme.js        三态主题
-    │   ├── holidayTheme.js 节日自动主题
-    │   └── share.js        复制状态到剪贴板
+        ├── data/
+        │   ├── festivals.js    节日公历日期表（自动主题数据源）
+        │   └── quotes.js       本地句库（离线兜底）
+        ├── modules/            业务模块（各自独立、可单独替换）
+        │   ├── countdown.js    倒计时显示
+        │   ├── progress.js     高中进度条
+        │   ├── milestones.js   关键节点（进度刻度 + 倒计时 chips）
+        │   ├── quotes.js       每日一言
+        │   ├── theme.js        三态主题
+        │   ├── holidayTheme.js 节日自动主题
+        │   └── share.js        复制状态到剪贴板
         └── main.js             入口编排层
 ```
 
@@ -109,17 +110,35 @@ CSS 中 `:root[data-festival="<id>"]` 会强制覆盖当天的浅色/深色主�
 农历节日按逐年核实的公历日期表录入。预览任意主题：
 `http://127.0.0.1:8000/?festival=spring-festival`。
 
-### 背景层 `.backdrop` — 纯 CSS 柔光 + 极光
+### 背景层 `.backdrop` — 纯 CSS 柔光 + 极光 + 光泽带
 液态玻璃的前提是"背后有东西可以透"。背景由一层 `.aurora` 定向渐变色带 +
 三个 `.blob` 径向渐变光斑构成，缓慢漂移，为玻璃提供色彩来源：
 - 用径向渐变而非 `filter: blur()` 实现柔边 —— 视觉等价，但几乎不耗 GPU；
+- `.backdrop::after` 是一道**静态**斜向光泽带。背景 `fixed` 而内容滚动，
+  滚动时高光便相对玻璃"滑动"，这是 iOS 液态玻璃动态感的来源，且不需要动画；
 - 没有 JS 参与，禁用脚本时背景依然完整；
 - 系统开启"减少动态效果"时全部静止。
 
-### 液态玻璃面板 `.panel` — 两条低成本签名
-页面由多个悬浮 `.panel`（英雄倒计时 / 征程 / 一言）组成，液态感来自两个纯 CSS 技法：
-- **发光描边**：`::before` 用渐变背景 + `mask` 镂空出 1.5px 亮边（受光侧亮、背光侧弱）；
-- **镜面扫光**：`::after` 一条柔亮带周期性掠过面板表面（9s 一次，reduced-motion 下静止）。
+### iOS 液态玻璃面板 `.panel` — 四层光学
+普通毛玻璃只做"模糊"，iOS Liquid Glass 做的是"折射"。每个面板叠四层，全部纯 CSS：
+
+| 层 | 实现 | 作用 |
+|---|---|---|
+| ① 主体 | `radial-gradient` 顶部透镜提亮 + 半透明玻璃 + `backdrop-filter: blur/saturate/brightness` | 折射背景、吸收背后色彩 |
+| ② 厚度 | `box-shadow` 多重 `inset`：上缘镜面高光、下缘与两侧反射、极淡外轮廓 | 不用实边框，靠反光界定玻璃边界 |
+| ③ 表面 | `.panel::before` 窄亮带周期掠过（10s，reduced-motion 静止） | 流动镜面扫光 |
+| ④ 边缘 | `.panel__optics` 的两个伪元素 + `mask` 镂空：白色高光环 + `conic-gradient` 棱镜色散 | Liquid Glass 最标志性的彩边 |
+
+`.panel__optics` 是每个面板内的**纯装饰空 span**（`aria-hidden`），不参与任何 JS 选择器。
+需要三层光学各自动画/透明度独立，两个伪元素不够用，故单独加这一层容器。
+
+**次级玻璃**：面板内的时分秒字条 / 指标卡 / chips 已**去掉 `backdrop-filter`** ——
+面板已经折射过背景，内部再模糊一次既失真又费 GPU；改由上缘高光 + 下缘厚度反光表达层次。
+页脚按钮/徽标浮在背景之上，仍保留模糊。
+
+**同心连续圆角**：`@supports (corner-shape: squircle)` 时启用 `superellipse(4)`，
+旧浏览器自动回退普通 `border-radius`。字体栈也改为 iOS 优先（SF Pro / 苹方）。
+
 配色仍全部来自 `tokens.css` 的变量，新增主题/节日只需补变量，JS 不碰颜色。
 
 ### UI 结构
@@ -179,16 +198,21 @@ timeline: {
 }
 ```
 
-**改配色** → `assets/css/tokens.css`。默认 `:root` 是浅色液态玻璃，`[data-theme="dark"]`
-是深色液态玻璃，改这两组变量即可，全站自动生效，JS 无需改动。
+**改配色** → `assets/css/tokens.css`。默认 `:root` 是浅色 iOS 玻璃，`[data-theme="dark"]`
+是深色 iOS 玻璃，改这两组变量即可，全站自动生效，JS 无需改动。
+光学层令牌（`--prism` / `--glass-sat` / `--glass-lum` / `--pearl`）定义在 `:root`，
+主题无关，浅/深/节日共用，不必在每套色板里重复。
 
 **加一句本地箴言** → `assets/js/data/quotes.js` 的 `LOCAL_QUOTES` 数组。
 
 **关掉跑题词护栏** → `config.js` 里把 `quote.blockKeywords` 置为 `[]`。
 
 **调玻璃质感** → `tokens.css`：`--glass` / `--glass-2` / `--glass-3` 是玻璃层不透明度，
-`--blur` 是模糊强度；光斑颜色改 `--blob-1/2/3`，浓淡改 `--blob-opacity`；
-液态描边改 `--edge-1/2`，扫光改 `--sheen` / `--sheen-opacity`。
+`--blur` 是模糊强度，`--glass-sat` / `--glass-lum` 是折射后的饱和/提亮；
+光斑颜色改 `--blob-1/2/3`，浓淡改 `--blob-opacity`；
+镜面高光环改 `--edge-1/2`，扫光改 `--sheen` / `--sheen-opacity`；
+**棱镜色散浓淡**改 `--prism-opacity`（调 0 即完全关闭彩边），色散色相改 `--prism`；
+弹性手感改 `--ease-ios` / `--ease-jelly`。
 
 **改关键节点** → `config.js` 的 `milestones` 数组（按比例 `ratio` 或开考前 `beforeTargetDays`）。
 

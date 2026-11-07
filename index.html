@@ -6,6 +6,8 @@
   <meta name="description" content="2028 年高考倒计时 · 高中进度追踪 · 每日一言">
   <meta name="theme-color" content="#0a0d16" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#e9edf6" media="(prefers-color-scheme: light)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta property="og:title" content="2028 高考倒计时">
   <meta property="og:description" content="向着月亮出发，即使不能到达，也能站在群星之中。">
 
@@ -21,7 +23,7 @@
 </head>
 <body>
 
-  <!-- 液态玻璃背景：柔光斑 + 极光层。纯 CSS，无 JS 也能显示 -->
+  <!-- iOS 液态玻璃背景：柔光斑 + 极光层。纯 CSS，无 JS 也能显示 -->
   <div class="backdrop" aria-hidden="true">
     <span class="aurora"></span>
     <span class="blob blob--1"></span>
@@ -63,6 +65,7 @@
 
     <!-- ========== 英雄面板：倒计时 ========== -->
     <section class="panel hero" aria-labelledby="examName">
+      <span class="panel__optics" aria-hidden="true"></span>
       <p class="eyebrow">Countdown</p>
       <h1 class="title" id="examName">2028 高考</h1>
       <p class="subtitle">
@@ -97,6 +100,7 @@
 
     <!-- ========== 征程面板：进度 + 指标 + 关键节点 ========== -->
     <section class="panel journey progress" aria-labelledby="progressTitle">
+      <span class="panel__optics" aria-hidden="true"></span>
       <div class="progress__head">
         <h2 id="progressTitle">高中进度</h2>
         <b class="tnum" id="progressPercent">0%</b>
@@ -136,6 +140,7 @@
 
     <!-- ========== 一言面板 ========== -->
     <section class="panel quote">
+      <span class="panel__optics" aria-hidden="true"></span>
       <span class="quote__mark" aria-hidden="true">&ldquo;</span>
       <button class="quote__refresh" id="quoteRefresh" type="button"
               aria-label="换一句话" title="换一句话">

@@ -88,6 +88,19 @@ body {
   animation: drift-3 38s var(--ease-out) infinite alternate;
 }
 
+/* 穿过玻璃的静态光泽带：背景是 fixed、内容会滚动，
+   滚动时这道高光便相对玻璃"滑动"，正是 iOS 液态玻璃的动态感来源。
+   不伸出视口、不做动画 —— 不影响移动端 layout viewport，也不额外耗 GPU。 */
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(118deg,
+              transparent 26%, var(--glass-3) 47%, transparent 68%);
+  opacity: 0.32;
+  pointer-events: none;
+}
+
 @keyframes aurora-sway {
   from { transform: translate3d(-2%, -1%, 0) rotate(-1deg); }
   to   { transform: translate3d(2%, 1.5%, 0) rotate(1deg); }
